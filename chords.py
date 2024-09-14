@@ -4,8 +4,8 @@ import random
 #ALL 0-1
 dissonance = 0
 creativity = 0
-minorPreference = 0
-majorPreference = 1
+minorPreference = 1
+majorPreference = 0
 
 key = random.choices([["Major","Minor"],[majorPreference,minorPreference]])
 # if key == "Major":
@@ -72,13 +72,13 @@ def convertChordToWeight(interval, positionInProgression, quality):
     
     presets = {
         "greatPick" : 2-d/2,
-        "decentPick" : 0.75-d/4-c/4,
-        "boringPick" : 1-c/4,
-        "unlikelyPick" : 0.25+d/4,
-        "creativePick" : 0.25+c/2,
+        "decentPick" : 1.2-d/4-c/4,
+        "boringPick" : 0.75-c/4,
+        "unlikelyPick" : 0.2+d/4,
+        "creativePick" : 0+c,
         "badCreativePick" : 0+c/2,
         "dissonantPick" : 0.1+d/2,
-        "badDissonantPick" : 0+d/4
+        "badDissonantPick" : 0+d/3
     }
     
     abbreviationsToPresets = {
@@ -109,10 +109,10 @@ def makeMegaWeightMap():
 
     megaWeightMapQualities = [
         #this is gibberish and completely subjective
-        ["g", "bd", "c", "u", "u", "e", "bd", "e", "bd", "c", "u", "bd"],
-        ["b", "bd", "e", "e", "e", "e", "bd", "e", "c", "u", "u", "bd"],
-        ["b", "bd", "c", "u", "e", "e", "bd", "e", "c", "u", "u", "bd"],
-        ["b", "bd", "c", "u", "e", "e", "bd", "e", "c", "u", "e", "g"]
+        ["g", "bd", "c", "d", "u", "c", "bd", "e", "bd", "d", "d", "bd"],
+        ["b", "bd", "e", "e", "c", "e", "bd", "e", "c", "u", "u", "bd"],
+        ["b", "bd", "c", "u", "c", "e", "bd", "e", "d", "u", "u", "bd"],
+        ["b", "bd", "c", "u", "u", "g", "bd", "e", "c", "u", "e", "c"]
     ]
     
     megaWeightMap = []
@@ -126,8 +126,7 @@ def makeMegaWeightMap():
             tempList.append(convertChordToWeight(j, i, megaWeightMapQualities[i][j]))
             
         megaWeightMap.append(tempList)
-    
-    print(megaWeightMap)
+
     return megaWeightMap
             
             
@@ -140,6 +139,8 @@ def decideNextChord(currentChordInterval, currentChordType, nextPositionInProgre
     
     options = [0,1,2,3,4,5,6,7,8,9,10,11]
     pick = random.choices(options, weights)[0]
+    if pick == currentChordInterval and random.randrange(0,10) > (creativity*10):
+        pick = random.choices(options, weights)[0]
     chordType = pickChordType(pick)
     return [pick, chordType]
 
@@ -160,9 +161,3 @@ def getNotesFromChord(c):
         notes[i] += c[0]
         
     return notes
-
-progression = generateProgression()
-
-for i in range(len(progression)):
-    chord = progression[i]
-    print(getNotesFromChord(chord))
