@@ -36,7 +36,7 @@ ttk.Label(frame, text="Sporadicness").grid(row=2, column=0, padx=5, pady=5)
 slider3 = ttk.Scale(frame, from_=0, to=100, orient='horizontal', command=onSporadicnessChange)
 slider3.grid(row=2, column=1, padx=5, pady=5)
 
-timeline1 = Timeline(0, [Note(60, 0, 0, 5)])
+timeline1 = Timeline(0)
 piece = Piece([(120, 0)], [timeline1])
 def editMusic():
     global timeline1, piece, done
@@ -46,7 +46,6 @@ def editMusic():
     while not done:
         if len(timeline1.notes) <= 1 or time.time() - music.startTime + buffer > noteTimeToTime(timeline1.notes[-1].time, piece.bpms):
             nextRhythm = rhythm.generateMelodyRhythm()
-            print("generating rhythm at", barTime)
             barTime += 4
             for j in range(len(nextRhythm)):
                 noteLen = (nextRhythm[j + 1] if j < len(nextRhythm) - 1 else 4) - nextRhythm[j]

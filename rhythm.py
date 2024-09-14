@@ -74,7 +74,6 @@ maxSpeed = max(rhythms, key=lambda x: x[2])[2]
 
 def generateMelodyRhythm():
     global rhythms, syncopation, speed, minSyncopation, maxSyncopation, minSpeed, maxSpeed
-    print(speed, syncopation)
 
     initialAllowedSyncopationVariance = 0
     initialAllowedSpeedVariance = 0
