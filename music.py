@@ -48,7 +48,7 @@ def playTimeline(timeline, bpms, timelineOnI, timelineOffI): #kind of a coroutin
     channel = timeline.channel
     notes = timeline.notes
 
-    global startTime
+    global startTime, lastPlayedNoteNoteTime, lastPlayedNoteTime
     currentTime = time.time()
     if timelineOnI < len(notes):
         currentOnNote = notes[timelineOnI]

@@ -1,13 +1,11 @@
-from music import *
 import random
-import itertools
 from sympy.utilities.iterables import multiset_permutations
 import math
 
 #all from 0 to 1
-speed = 0.5
-syncopation = 0.5
-sporadicness = 0.2 #0 = very repetitive, 1 = very sporadic
+speed = 0
+syncopation = 0
+sporadicness = 0 #0 = very repetitive, 1 = very sporadic
 
 def determineNotePulse(noteTime): #higher number = more syncopation
     epsilon = 0.0001
@@ -76,6 +74,7 @@ maxSpeed = max(rhythms, key=lambda x: x[2])[2]
 
 def generateMelodyRhythm():
     global rhythms, syncopation, speed, minSyncopation, maxSyncopation, minSpeed, maxSpeed
+    print(speed, syncopation)
 
     initialAllowedSyncopationVariance = 0
     initialAllowedSpeedVariance = 0
@@ -95,11 +94,11 @@ def generateMelodyRhythm():
 
 phrases = [
     "AAAA",
-    "AABB",
-    "ABAB",
-    "ABAC",
-    "AABC",
-    "ABCD"
+    # "AABB",
+    # "ABAB",
+    # "ABAC",
+    # "AABC",
+    # "ABCD"
 ]
 
 def generate4BarRhythm():
@@ -114,7 +113,6 @@ def generate4BarRhythm():
         potentialIndex = random.randint(0, len(phrases) - 1)
         if (abs(potentialIndex / len(phrases) - sporadicness) <= allowedVariance):
             phrase = phrases[potentialIndex]
-            print(phrase, allowedVariance)
             break
     rhythm = []
     melodiesForPhrases = {}
@@ -124,16 +122,16 @@ def generate4BarRhythm():
         rhythm += [x + i * 4 for x in melodiesForPhrases[phrase[i]]]
     return rhythm
 
-timeline1 = Timeline(0, [])
-timeline2 = Timeline(1, [])
-piece = Piece([(120, 0)], [timeline1, timeline2])
-for i in range(160):
-    timeline2.notes.append(Note(36, i, 120, 1))
-for i in range(10):
-    rhythm = generate4BarRhythm()
-    for j in range(len(rhythm)):
-        noteLen = (rhythm[j + 1] if j < len(rhythm) - 1 else 16) - rhythm[j]
-        note = Note(60, rhythm[j] + 16 * i, 70, noteLen)
-        timeline1.notes.append(note)
-init()
-playPiece(piece)
+# timeline1 = Timeline(0, [])
+# timeline2 = Timeline(1, [])
+# piece = Piece([(120, 0)], [timeline1, timeline2])
+# for i in range(160):
+#     timeline2.notes.append(Note(36, i, 120, 1))
+# for i in range(10):
+#     rhythm = generate4BarRhythm()
+#     for j in range(len(rhythm)):
+#         noteLen = (rhythm[j + 1] if j < len(rhythm) - 1 else 16) - rhythm[j]
+#         note = Note(60, rhythm[j] + 16 * i, 70, noteLen)
+#         timeline1.notes.append(note)
+# init()
+# playPiece(piece)
