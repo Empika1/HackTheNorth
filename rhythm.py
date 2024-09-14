@@ -5,9 +5,9 @@ from sympy.utilities.iterables import multiset_permutations
 import math
 
 #all from 0 to 1
-speed = 0.5
-syncopation = 0.5
-sporadicness = 0.2 #0 = very repetitive, 1 = very sporadic
+speed = 0.1
+syncopation = 0.1
+sporadicness = 0.4 #0 = very repetitive, 1 = very sporadic
 
 def determineNotePulse(noteTime): #higher number = more syncopation
     epsilon = 0.0001
@@ -124,16 +124,16 @@ def generate4BarRhythm():
         rhythm += [x + i * 4 for x in melodiesForPhrases[phrase[i]]]
     return rhythm
 
-timeline1 = Timeline(0, [])
-timeline2 = Timeline(1, [])
-piece = Piece([(120, 0)], [timeline1, timeline2])
-for i in range(160):
-    timeline2.notes.append(Note(36, i, 120, 1))
-for i in range(10):
-    rhythm = generate4BarRhythm()
-    for j in range(len(rhythm)):
-        noteLen = (rhythm[j + 1] if j < len(rhythm) - 1 else 16) - rhythm[j]
-        note = Note(60, rhythm[j] + 16 * i, 70, noteLen)
-        timeline1.notes.append(note)
-init()
-playPiece(piece)
+# timeline1 = Timeline(0, [])
+# timeline2 = Timeline(1, [])
+# piece = Piece([(120, 0)], [timeline1, timeline2])
+# for i in range(160):
+#     timeline2.notes.append(Note(36, i, 120, 1))
+# for i in range(10):
+#     rhythm = generate4BarRhythm()
+#     for j in range(len(rhythm)):
+#         noteLen = (rhythm[j + 1] if j < len(rhythm) - 1 else 16) - rhythm[j]
+#         note = Note(60, rhythm[j] + 16 * i, 70, noteLen)
+#         timeline1.notes.append(note)
+# init()
+# playPiece(piece)
