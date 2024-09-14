@@ -1,13 +1,11 @@
-from music import *
 import random
-import itertools
 from sympy.utilities.iterables import multiset_permutations
 import math
 
 #all from 0 to 1
-speed = 0.1
-syncopation = 0.1
-sporadicness = 0.4 #0 = very repetitive, 1 = very sporadic
+speed = 0
+syncopation = 0
+sporadicness = 0 #0 = very repetitive, 1 = very sporadic
 
 def determineNotePulse(noteTime): #higher number = more syncopation
     epsilon = 0.0001
@@ -76,6 +74,7 @@ maxSpeed = max(rhythms, key=lambda x: x[2])[2]
 
 def generateMelodyRhythm():
     global rhythms, syncopation, speed, minSyncopation, maxSyncopation, minSpeed, maxSpeed
+    print(speed, syncopation)
 
     initialAllowedSyncopationVariance = 0
     initialAllowedSpeedVariance = 0
@@ -95,11 +94,11 @@ def generateMelodyRhythm():
 
 phrases = [
     "AAAA",
-    "AABB",
-    "ABAB",
-    "ABAC",
-    "AABC",
-    "ABCD"
+    # "AABB",
+    # "ABAB",
+    # "ABAC",
+    # "AABC",
+    # "ABCD"
 ]
 
 def generate4BarRhythm():
@@ -114,7 +113,6 @@ def generate4BarRhythm():
         potentialIndex = random.randint(0, len(phrases) - 1)
         if (abs(potentialIndex / len(phrases) - sporadicness) <= allowedVariance):
             phrase = phrases[potentialIndex]
-            print(phrase, allowedVariance)
             break
     rhythm = []
     melodiesForPhrases = {}
