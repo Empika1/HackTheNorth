@@ -50,16 +50,16 @@ def playTimeline(timeline, bpms, timelineOnI, timelineOffI): #kind of a coroutin
 
     global startTime
     currentTime = time.time()
-    if timelineOnI < len(notes):
-        currentOnNote = notes[timelineOnI]
-        if currentTime - startTime >= noteTimeToTime(currentOnNote.time, bpms):
-            out.send(mido.Message('note_on', note=currentOnNote.note, velocity=currentOnNote.velocity, channel=channel))
-            timelineOnI += 1
     if timelineOffI < len(notes):
         currentOffNote = notes[timelineOffI]
         if currentTime - startTime >= noteTimeToTime(currentOffNote.time + currentOffNote.length, bpms):
             out.send(mido.Message('note_off', note=currentOffNote.note, velocity=currentOffNote.velocity, channel=channel))
             timelineOffI += 1
+    if timelineOnI < len(notes):
+        currentOnNote = notes[timelineOnI]
+        if currentTime - startTime >= noteTimeToTime(currentOnNote.time, bpms):
+            out.send(mido.Message('note_on', note=currentOnNote.note, velocity=currentOnNote.velocity, channel=channel))
+            timelineOnI += 1
     else:
         return (timelineOnI, timelineOffI, True)
     return (timelineOnI, timelineOffI, False)

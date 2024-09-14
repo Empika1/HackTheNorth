@@ -3,19 +3,15 @@ import random
 
 #ALL 0-1
 dissonance = 0
-creativity = 0
-majorness = 0
+creativity = 0.3
+majorness = 1
 
 sampleMinorProgressions = [
-    [[0, "Minor"],[8, "Major"],[10, "Major"],[7, "Major"]],
-    [[0, "Minor"],[10, "Major"],[8, "Major"],[7, "Major"]],
-    [[0, "Minor"],[7, "Major"],[8, "Major"],[3, "Major"]]
+    
 ]
 
 sampleMajorProgressions = [
-    [[0, "Minor"],[2, "Major"],[4, "Minor"],[4, "Minor"]],
-    [[0, "Minor"],[5, "Major"],[7, "Major"],[5, "Major"]],
-    [[0, "Minor"],[9, "Minor"],[5, "Major"],[7, "Major"]]
+    
 ]
 
 key = random.choices(["Major","Minor"],[majorness,1-majorness])[0]
@@ -66,8 +62,8 @@ def findChordWeightings(interval):
         majorWeight = 1
         minorWeight = 1
         
-    dimWeight = minorWeight * dissonance
-    augWeight = majorWeight * dissonance
+    dimWeight = minorWeight * dissonance/2
+    augWeight = majorWeight * dissonance/2
     
     return [majorWeight, minorWeight, dimWeight, augWeight]
     
@@ -91,7 +87,7 @@ def convertChordToWeight(interval, positionInProgression, quality):
         "decentPick" : 1.5-d/4-c/4,
         "boringPick" : 0.75-c/4,
         "unlikelyPick" : 0+d/4+c/4,
-        "creativePick" : 0+c,
+        "creativePick" : 0+c*2,
         "badCreativePick" : 0+c/2,
         "dissonantPick" : 0+d/2,
         "badDissonantPick" : 0+d/4
@@ -194,7 +190,8 @@ def generateProgression(useSamples = False):
 def getNotesFromChord(c):
     chordType = c[1]
     notes = chords[chordType]
+    newnotes = []
     for i in range(len(notes)):
-        notes[i] = capNote (notes[i] + c[0])
+        newnotes.append(notes[i] + c[0])
         
-    return notes
+    return newnotes

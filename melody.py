@@ -3,7 +3,26 @@ from chords import *
 
 jumpiness = 0
 
+currentMelodyLog = []
+savedMelody = []
+replayingPos = 0
+
+def findNearestNote(note, iMap):
+    octaveFactor = 0
+    while note >= 12:
+        note -= 12
+        octaveFactor += 1
+        
+    if iMap[note] == 1:
+        return note
+    else:
+        if iMap[note-1] == 1:
+            return note-1+octaveFactor*12
+        if iMap[note+1] == 1:
+            return note+1+octaveFactor*12
+
 def generateNextNote(lastNote, time, chord, key):
+    global savedMelody, currentMelodyLog, replayingPos
     noteChoices = chord
     note = 99
     
@@ -21,22 +40,18 @@ def generateNextNote(lastNote, time, chord, key):
             noteChoices.append(noteChecking)
     
     # Key steps
-    # noteChecking = lastNote + 1
-    # if noteChecking >= len(iMap) - 1:
-    #     noteChecking = 0
-    # if noteChecking < 0:
-    #     noteChecking = 12 - noteChecking
-    # while iMap[noteChecking] == 0:
-    #     noteChecking += 1
-    #     if noteChecking >= len(iMap) - 1:
-    #         noteChecking = 0
-    #     if noteChecking < 0:
-    #         noteChecking = 12 - noteChecking
-    # noteChoices.append(noteChecking)
+    noteChecking = lastNote + 1
+    noteChecking = noteChecking % 12
+    while iMap[noteChecking] == 0:
+        noteChecking += 1
+        noteChecking = noteChecking % 12
+    noteChoices.append(noteChecking)
     
     #Prioritize starting on roots
     if time % 4 == 0 or random.random() > creativity/4 + 0.8:
         note = chord[0]
+        if note + 12 - lastNote <= 2:
+            note += 12
     
     if time % 16 >= 15 and key == "Minor":
         noteChoices.append(11)
@@ -45,6 +60,15 @@ def generateNextNote(lastNote, time, chord, key):
         noteChoices.append(10)
     
     if note == 99:
-        note = random.choice(noteChoices)
+        while note - lastNote > 4:
+            note = random.choice(noteChoices)
+    
+    if time % 16 < 4:
+        currentMelodyLog.append(note)
+    elif len(savedMelody) == 0 and time % 16 < 8:
+        savedMelody = currentMelodyLog
+    if time % 16 < 12 and time % 16 >= 8:
+        note = findNearestNote(chord[0] + savedMelody[replayingPos], iMap)
+        replayingPos += 1
     
     return note

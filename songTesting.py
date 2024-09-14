@@ -17,17 +17,17 @@ intensity = 0
 #for i in range(40):
     #timeline2.notes.append(Note(36, i, 70, 1))
 
-piece = Piece([(random.randint(70,95), 0)], [timeline1, timeline2, timeline3])
+piece = Piece([(random.randint(70,90), 0)], [timeline1, timeline2, timeline3])
 
-pasteDrumLoop("FullRock", timeline3, 0)
-pasteDrumLoop("FullRock", timeline3, 4)
-pasteDrumLoop("FullRock", timeline3, 8)
-pasteDrumLoop("FullRock", timeline3, 12)
+for i in range(8):
+    pasteDrumLoop("BigRoll", timeline3, i*4)
 
 rhythms = [generateMelodyRhythm(),generateMelodyRhythm()]
 
-for i in range(4):
+for i in range(8):
     notes = getNotesFromChord(progression[i%4])
+    print(progression[i%4])
+    print(notes)
     noteTime = 0 if len(timeline2.notes) == 0 else timeline2.notes[-1].time + timeline2.notes[-1].length
     note = Note(rootNote + notes[0], noteTime, 35 + (5 if noteTime % 4 == 0 else 0) + (5 if noteTime % 2 == 0 else 0), 4)
     timeline2.notes.append(note)
@@ -39,10 +39,9 @@ for i in range(4):
     #MELODY
     lastNote = 99
     rhythm = rhythms[i%2]
-    notes = getNotesFromChord(progression[i%4])
     for j in range(len(rhythm)):
         noteLen = (rhythm[j + 1] if j < len(rhythm) - 1 else 4) - rhythm[j]
-        nextNote = generateNextNote(lastNote, rhythm[j] + 4, notes, key)
+        nextNote = generateNextNote(lastNote, rhythm[j] + 4 * i, notes, key)
         note = Note(rootNote + 12 + nextNote, rhythm[j] + 4 * i, 70, noteLen)
         lastNote = nextNote
         timeline1.notes.append(note)
