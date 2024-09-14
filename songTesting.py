@@ -3,7 +3,6 @@ from chords import *
 from drums import *
 from rhythm import *
 import random
-import time
 from melody import *
 
 rootNote = 44 + random.randint(0,7)

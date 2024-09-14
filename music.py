@@ -14,12 +14,12 @@ class Note:
         self.length = length
 
 class Timeline:
-    def __init__(self, channel, notes = []):
+    def __init__(self, channel, notes):
         self.channel = channel
         self.notes = notes
 
 class Piece:
-    def __init__(self, bpms = [], timelines = []):
+    def __init__(self, bpms, timelines):
         self.bpms = bpms
         self.timelines = timelines
 
@@ -48,21 +48,30 @@ def playTimeline(timeline, bpms, timelineOnI, timelineOffI): #kind of a coroutin
     channel = timeline.channel
     notes = timeline.notes
 
+    timelineOnI_ = timelineOnI
+    timelineOffI_ = timelineOffI
+
     global startTime
     currentTime = time.time()
-    if timelineOffI < len(notes):
-        currentOffNote = notes[timelineOffI]
-        if currentTime - startTime >= noteTimeToTime(currentOffNote.time + currentOffNote.length, bpms):
+    if timelineOffI_ < len(notes):
+        currentOffNote = notes[timelineOffI_]
+        while currentTime - startTime > noteTimeToTime(currentOffNote.time + currentOffNote.length, bpms):
             out.send(mido.Message('note_off', note=currentOffNote.note, velocity=currentOffNote.velocity, channel=channel))
-            timelineOffI += 1
-    if timelineOnI < len(notes):
-        currentOnNote = notes[timelineOnI]
-        if currentTime - startTime >= noteTimeToTime(currentOnNote.time, bpms):
-            out.send(mido.Message('note_on', note=currentOnNote.note, velocity=currentOnNote.velocity, channel=channel))
-            timelineOnI += 1
+            timelineOffI_ += 1
+            if timelineOffI_ < len(notes):
+                currentOffNote = notes[timelineOffI_]
     else:
-        return (timelineOnI, timelineOffI, True)
-    return (timelineOnI, timelineOffI, False)
+        return (timelineOnI_, timelineOffI_, True)
+    if timelineOnI_ < len(notes):
+        currentOnNote = notes[timelineOnI_]
+        while currentTime - startTime > noteTimeToTime(currentOnNote.time, bpms):
+            out.send(mido.Message('note_on', note=currentOnNote.note, velocity=currentOnNote.velocity, channel=channel))
+            timelineOnI_ += 1
+            if timelineOnI_ < len(notes):
+                currentOnNote = notes[timelineOnI_]
+            else:
+                break
+    return (timelineOnI_, timelineOffI_, False)
 
 done = False
 def playPiece(piece, stopAutomatically = False):
