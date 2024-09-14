@@ -117,7 +117,7 @@ def makeMegaWeightMap():
         ["g", "bd", "c", "d", "c", "c", "bd", "c", "bd", "d", "bd", "bd"],
         ["b", "bd", "e", "d", "c", "g", "bd", "e", "d", "c", "d", "c"],
         ["b", "bd", "c", "d", "e", "e", "bd", "g", "d", "u", "bd", "bd"],
-        ["e", "bd", "c", "d", "u", "g", "bd", "g", "d", "u", "d", "g"]
+        ["e", "bd", "c", "d", "u", "g", "bd", "g", "d", "u", "d", "d"]
     ]
     
     megaWeightMapMinorQualities = [
