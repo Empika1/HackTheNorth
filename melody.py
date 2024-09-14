@@ -10,9 +10,9 @@ def generateNextNote(lastNote, time, chord, key):
     else:
         iMap = minorKeyIntervalMap
     
-    # noteChecking = random.randrange(0,12)
-    # while iMap[noteChecking] == 0:
-    #     noteChecking = random.randrange(0,12)
+    noteChecking = random.randrange(0,12)
+    while iMap[noteChecking] == 0:
+        noteChecking = random.randrange(0,12)
     
     if noteChecking not in chord:
         if random.random() < 0.05 + creativity/2:

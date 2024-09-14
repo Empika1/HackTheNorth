@@ -5,6 +5,16 @@ from tkinter import ttk
 import rhythm
 import music
 from music import Note, Timeline, Piece, noteTimeToTime, playPiece, init, stopPlaying
+import chords
+import sv_ttk
+
+# Create the main window
+root = tk.Tk()
+root.title("AutOST")
+
+sv_ttk.set_theme("dark")
+
+sliders = ["Syncopation", "Speed", "Sporadicness", "Dissonance", "Creativity", "Majorness", "Jumpiness"]
 
 def onSyncopationChange(value):
     rhythm.syncopation = float(value) / 100
@@ -15,26 +25,38 @@ def onSpeedChange(value):
 def onSporadicnessChange(value):
     rhythm.sporadicness = float(value) / 100
 
-# Create the main window
-root = tk.Tk()
-root.title("Tkinter Sliders Example")
+def onDissonanceChange(value):
+    chords.dissonance = float(value) / 100
+
+def onCreativityChange(value):
+    chords.creativity = float(value) / 100
+
+def onMajornessChange(value):
+    chords.majorness = float(value) / 100
+
+def onJumpinessChange(value):
+    pass
+
+functions = [
+    onSyncopationChange,
+    onSpeedChange,
+    onSporadicnessChange,
+    onDissonanceChange,
+    onCreativityChange,
+    onMajornessChange,
+    onJumpinessChange
+]
 
 # Create a frame to hold the sliders
 frame = ttk.Frame(root, padding="10")
 frame.grid(row=0, column=0, sticky=(tk.W, tk.E, tk.N, tk.S))
 
-# Create and place sliders with labels
-ttk.Label(frame, text="Syncopation").grid(row=0, column=0, padx=5, pady=5)
-slider1 = ttk.Scale(frame, from_=0, to=100, orient='horizontal', command=onSyncopationChange)
-slider1.grid(row=0, column=1, padx=5, pady=5)
-
-ttk.Label(frame, text="Speed").grid(row=1, column=0, padx=5, pady=5)
-slider2 = ttk.Scale(frame, from_=0, to=100, orient='horizontal', command=onSpeedChange)
-slider2.grid(row=1, column=1, padx=5, pady=5)
-
-ttk.Label(frame, text="Sporadicness").grid(row=2, column=0, padx=5, pady=5)
-slider3 = ttk.Scale(frame, from_=0, to=100, orient='horizontal', command=onSporadicnessChange)
-slider3.grid(row=2, column=1, padx=5, pady=5)
+#add the sliders
+for(i, slider) in enumerate(sliders):
+    function = functions[i]
+    ttk.Label(root, text=slider).grid(row=i, column=0, padx=5, pady=5)
+    slider = ttk.Scale(root, from_=0, to=100, orient='horizontal', command=function)
+    slider.grid(row=i, column=1, padx=5, pady=5)
 
 timeline1 = Timeline(0)
 piece = Piece([(120, 0)], [timeline1])
