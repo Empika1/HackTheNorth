@@ -64,7 +64,9 @@ def playTimeline(timeline, bpms, timelineOnI, timelineOffI): #kind of a coroutin
         return (timelineOnI, timelineOffI, True)
     return (timelineOnI, timelineOffI, False)
 
+done = False
 def playPiece(piece):
+    global done
     timelines = piece.timelines
     bpms = piece.bpms
 
@@ -74,6 +76,10 @@ def playPiece(piece):
     while True:
         for i in range(len(timelines)):
             timelineOnIs[i], timelineOffIs[i], dones[i] = playTimeline(timelines[i], bpms, timelineOnIs[i], timelineOffIs[i])
-        if all(dones):
-            break    
+        if done:
+            break
+
+def stopPlaying():
+    global done
+    done = True
 
