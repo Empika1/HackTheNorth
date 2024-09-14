@@ -4,10 +4,7 @@ import pygame.midi
 
 mido.set_backend("mido.backends.portmidi")
 
-names = mido.get_output_names()
-print(names)
-
-out = mido.open_output(names[2])
+out = mido.open_output("LoopBe Internal MIDI")
 
 class Note:
     def __init__(self, note, time, velocity, length): #length of 1 is a quarter note
@@ -80,10 +77,3 @@ def playPiece(piece):
         if all(dones):
             break    
 
-
-timeline1 = Timeline(0)
-piece = Piece([], [timeline1])
-for i in range(32):
-    timeline1.notes.append(Note(60 + i, i, 64, 1))
-    piece.bpms.append((120 + 20 * i, i))
-playPiece(piece)
