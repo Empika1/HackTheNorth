@@ -80,7 +80,7 @@ def generateMelodyRhythm():
     retries = 100000
 
     for i in range(retries + 1):
-        allowedSyncopationVariance = (initialAllowedSyncopationVariance * (1 - i / retries) + 1 * (i / retries)) ** 4
+        allowedSyncopationVariance = (initialAllowedSyncopationVariance * (1 - i / retries) + 1 * (i / retries)) ** 1.5
         allowedSpeedVariance = (initialAllowedSpeedVariance * (1 - i / retries) + 1 * (i / retries)) ** 4
 
         potentialIndex = random.randint(0, len(rhythms) - 1)

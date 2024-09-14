@@ -3,7 +3,6 @@ from chords import *
 from drums import *
 from rhythm import *
 import random
-import time
 from melody import *
 
 rootNote = 44 + random.randint(0,7)
@@ -43,7 +42,7 @@ for i in range(4):
     for j in range(len(rhythm)):
         noteLen = (rhythm[j + 1] if j < len(rhythm) - 1 else 4) - rhythm[j]
         nextNote = generateNextNote(lastNote, rhythm[j] + 4, notes, key)
-        note = Note(rootNote + 12 + nextNote, rhythm[j] + 4 * i, 70, noteLen)
+        note = Note(rootNote + 12 + nextNote, rhythm[j] + 4 * i, 70, noteLen / 2)
         lastNote = nextNote
         timeline1.notes.append(note)
         
