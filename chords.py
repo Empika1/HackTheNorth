@@ -5,7 +5,7 @@ import random
 dissonance = 0
 creativity = 0
 minorPreference = 1
-majorPreference = 0
+majorPreference = 1
 
 key = random.choices(["Major","Minor"],[majorPreference,minorPreference])[0]
 # if key == "Major":
@@ -77,7 +77,7 @@ def convertChordToWeight(interval, positionInProgression, quality):
     
     presets = {
         "greatPick" : 2-d/2,
-        "decentPick" : 1.2-d/4-c/4,
+        "decentPick" : 1.5-d/4-c/4,
         "boringPick" : 0.75-c/4,
         "unlikelyPick" : 0+d/4+c/4,
         "creativePick" : 0+c,
@@ -115,17 +115,17 @@ def makeMegaWeightMap():
     megaWeightMapMajorQualities = [
         #this is gibberish and completely subjective
         ["g", "bd", "c", "d", "c", "c", "bd", "c", "bd", "d", "bd", "bd"],
-        ["b", "bd", "e", "d", "c", "g", "bd", "e", "d", "c", "d", "c"],
-        ["b", "bd", "c", "d", "e", "e", "bd", "g", "d", "u", "bd", "bd"],
+        ["b", "bd", "c", "d", "c", "g", "bd", "e", "d", "c", "d", "c"],
+        ["b", "bd", "c", "d", "c", "e", "bd", "g", "d", "u", "bd", "bd"],
         ["e", "bd", "c", "d", "u", "g", "bd", "g", "d", "u", "d", "d"]
     ]
     
     megaWeightMapMinorQualities = [
         #this is gibberish and completely subjective
         ["g", "bd", "c", "c", "d", "c", "bd", "c", "bd", "d", "d", "bd"],
-        ["b", "bd", "e", "g", "d", "e", "bd", "e", "c", "d", "c", "bd"],
-        ["b", "bd", "c", "e", "d", "e", "bd", "e", "e", "d", "c", "bd"],
-        ["b", "bd", "c", "e", "d", "g", "bd", "e", "c", "d", "e", "d"]
+        ["b", "bd", "c", "g", "d", "e", "bd", "e", "c", "d", "c", "bd"],
+        ["b", "bd", "c", "e", "d", "e", "bd", "e", "c", "d", "c", "bd"],
+        ["b", "bd", "c", "e", "d", "g", "bd", "e", "c", "d", "c", "d"]
     ]
     
     if key == "Major":

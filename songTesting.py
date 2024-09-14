@@ -6,7 +6,7 @@ import random
 import time
 from melody import *
 
-rootNote = 46 + random.randint(0,12)
+rootNote = 44 + random.randint(0,7)
 
 timeline1 = Timeline(0, []) 
 timeline2 = Timeline(1, [])
@@ -48,3 +48,4 @@ for i in range(4):
         
 init()
 playPiece(piece)
+stopPlaying()
