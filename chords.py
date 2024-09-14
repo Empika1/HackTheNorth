@@ -4,16 +4,27 @@ import random
 #ALL 0-1
 dissonance = 0
 creativity = 0
-minorPreference = 1
-majorPreference = 1
+majorness = 0
 
-key = random.choices(["Major","Minor"],[majorPreference,minorPreference])[0]
+sampleMinorProgressions = [
+    [[0, "Minor"],[8, "Major"],[10, "Major"],[7, "Major"]],
+    [[0, "Minor"],[10, "Major"],[8, "Major"],[7, "Major"]],
+    [[0, "Minor"],[7, "Major"],[8, "Major"],[3, "Major"]]
+]
+
+sampleMajorProgressions = [
+    [[0, "Minor"],[2, "Major"],[4, "Minor"],[4, "Minor"]],
+    [[0, "Minor"],[5, "Major"],[7, "Major"],[5, "Major"]],
+    [[0, "Minor"],[9, "Minor"],[5, "Major"],[7, "Major"]]
+]
+
+key = random.choices(["Major","Minor"],[majorness,1-majorness])[0]
 # if key == "Major":
 #     majorPreference = 1
-#     minorPreference = 0
+#     1-majorness = 0
 # if key == "Minor":
 #     majorPreference = 0
-#     minorPreference = 1
+#     1-majorness = 1
 
 chordList = ["Major", "Minor", "Diminished", "Augmented"]
 chords = {
@@ -42,14 +53,14 @@ def findChordWeightings(interval):
     augWeight = 0
     
     if majorKeyChordMap[interval] == "Major":
-        majorWeight += majorPreference
+        majorWeight += majorness
     if majorKeyChordMap[interval] == "Minor":
-        minorWeight += majorPreference
+        minorWeight += majorness
         
     if minorKeyChordMap[interval] == "Major":
-        majorWeight += minorPreference
+        majorWeight += 1-majorness
     if minorKeyChordMap[interval] == "Minor":
-        minorWeight += minorPreference
+        minorWeight += 1-majorness
         
     if majorWeight + minorWeight == 0:
         majorWeight = 1
@@ -72,8 +83,8 @@ def convertChordToWeight(interval, positionInProgression, quality):
     
     c = creativity
     d = dissonance
-    ma = majorPreference
-    mi = minorPreference
+    ma = majorness
+    mi = 1-majorness
     
     presets = {
         "greatPick" : 2-d/2,
@@ -99,8 +110,8 @@ def convertChordToWeight(interval, positionInProgression, quality):
     
     weight += presets[abbreviationsToPresets[quality]]
 
-    weight -= (majorPreference * (1-majorKeyIntervalMap[interval])) * (1-d)
-    weight -= (minorPreference * (1-majorKeyIntervalMap[interval])) * (1-d)
+    weight -= (majorness * (1-majorKeyIntervalMap[interval])) * (1-d)
+    weight -= (1-majorness * (1-majorKeyIntervalMap[interval])) * (1-d)
         
     if weight < 0:
         weight = 0
@@ -162,13 +173,21 @@ def decideNextChord(currentChordInterval, currentChordType, nextPositionInProgre
     chordType = pickChordType(pick)
     return [pick, chordType]
 
-def generateProgression():
+def generateProgression(useSamples = False):
     prog = []
     cur = decideNextChord(0,0,0)
     for i in range(0,3):
         prog.append(cur)
         cur = decideNextChord(cur[0],cur[1],i+1)
     prog.append(cur)
+    
+    if useSamples == True:
+        
+        if key == "Major":
+            prog = random.choice(sampleMajorProgressions)
+            
+        if key == "Minor":
+            prog = random.choice(sampleMinorProgressions)
     
     return prog
 
