@@ -13,7 +13,6 @@ timeline2 = Timeline(1, [])
 timeline3 = Timeline(3, [])
 progression = generateProgression()
 
-
 intensity = 0
 #for i in range(40):
     #timeline2.notes.append(Note(36, i, 70, 1))
@@ -24,6 +23,8 @@ pasteDrumLoop("FullRock", timeline3, 0)
 pasteDrumLoop("FullRock", timeline3, 4)
 pasteDrumLoop("FullRock", timeline3, 8)
 pasteDrumLoop("FullRock", timeline3, 12)
+
+rhythms = [generateMelodyRhythm(),generateMelodyRhythm()]
 
 for i in range(4):
     notes = getNotesFromChord(progression[i%4])
@@ -37,7 +38,7 @@ for i in range(4):
     
     #MELODY
     lastNote = 99
-    rhythm = generateMelodyRhythm()
+    rhythm = rhythms[i%2]
     notes = getNotesFromChord(progression[i%4])
     for j in range(len(rhythm)):
         noteLen = (rhythm[j + 1] if j < len(rhythm) - 1 else 4) - rhythm[j]
