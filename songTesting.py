@@ -40,11 +40,11 @@ for i in range(4):
     rhythm = generateMelodyRhythm()
     notes = getNotesFromChord(progression[i%4])
     for j in range(len(rhythm)):
-        noteLen = (rhythm[j + 1] if j < len(rhythm) - 1 else 16) - rhythm[j]
+        noteLen = (rhythm[j + 1] if j < len(rhythm) - 1 else 4) - rhythm[j]
         nextNote = generateNextNote(lastNote, rhythm[j] + 4, notes, key)
         note = Note(rootNote + 12 + nextNote, rhythm[j] + 4 * i, 70, noteLen)
         lastNote = nextNote
         timeline1.notes.append(note)
         
 init()
-playPiece(piece)
+playPiece(piece, True)
