@@ -26,7 +26,6 @@ def onSyncopationChange(value):
     rhythm.syncopation = float(value) / 100
 
 def onSpeedChange(value):
-    print(value)
     rhythm.speed = float(value) / 100
 
 def onSporadicnessChange(value):
@@ -87,6 +86,8 @@ def editMusic():
     currentBar = 0
     current4Bar = 0
 
+    oldSyncopation = rhythm.syncopation
+    oldSpeed = rhythm.speed
     oldDissonance = chords.dissonance
     oldCreativity = chords.creativity
     oldMajorness = chords.majorness
@@ -113,26 +114,18 @@ def editMusic():
 
     while not done:
         #general
-        #print("1", progressions)
         currentTime = 0
         timeInto = 0
         currentBeat = 0
         currentBar = 0
         current4Bar = 0
-        #print("2", progressions)
         def getTimes(): #if i want to call this multiple times in the loop?
             nonlocal currentTime, timeInto, currentBeat, currentBar, current4Bar
-            #print("3", progressions)
             currentTime = time.time() #avoids weird shit
-            #print("4", progressions)
             timeInto = currentTime - music.startTime
-            #print("5", progressions)
             while timeInto > noteTimeToTime(currentBeat, piece.bpms):
-                #print("6", progressions)
                 currentBeat += 1
-            #print("7", progressions)
             currentBar = currentBeat // 4
-            #print("8", progressions)
             current4Bar = currentBar // 4
         getTimes()
 
@@ -149,7 +142,12 @@ def editMusic():
             timeline1.channel = melodyInstrument
             harmonyInstrument = music.rollHarmonyInstrument(drums.intensity)
             timeline2.channel = harmonyInstrument
+        
+        if oldSyncopation != rhythm.syncopation or oldSpeed != rhythm.speed:
+            rhythm.resetRhythmScheme()
 
+        oldSyncopation = rhythm.syncopation
+        oldSpeed = rhythm.speed
         oldDissonance = chords.dissonance
         oldCreativity = chords.creativity
         oldMajorness = chords.majorness
@@ -159,79 +157,47 @@ def editMusic():
 
         #add melody rhythm
         if timeInto + melodyBuffer >= noteTimeToTime(nextRhythmBarToGenerate * 4, piece.bpms):
-            #print("10", progressions)
             nextRhythmBarToGenerate += 1
-            #print("11", progressions)
             nextRhythm = generateMelodyRhythm()
-            #print("12", progressions)
             for j in range(len(nextRhythm)):
-                #print("13", progressions)
                 noteLen = (nextRhythm[j + 1] if j < len(nextRhythm) - 1 else 4) - nextRhythm[j]
-                #print("14", progressions)
                 note = Note(60, nextRhythm[j] + currentBar * 4, 70, noteLen)
-                #print("15", progressions)
                 timeline1.notes.append(note)
-                #print("16", progressions)
             chordNotes = getNotesFromChord(progressions[-1][nextChordBarToGenerate % 4])
-            #print("17", progressions)
-        #print("18", progressions)
         
         #add chords   
         if timeInto + chordBuffer >= noteTimeToTime(nextChordBarToGenerate * 4, piece.bpms):
-            #print("19", progressions)
-            nextChordBarToGenerate += 1
-            #print("20", progressions)
             chordNotes = getNotesFromChord(progressions[-1][nextChordBarToGenerate % 4])
-            #print("21", progressions)
             noteTime = nextChordBarToGenerate * 4
-            #print("22", progressions)
             note = Note(rootNote + chordNotes[0], noteTime, 70, 4)
-            #print("23", progressions)
             timeline2.notes.append(note)
-            #print("24", progressions)
             note = Note(rootNote + chordNotes[1], noteTime, 70, 4)
-            #print("25", progressions)
             timeline2.notes.append(note)
-            #print("26", progressions)
             note = Note(rootNote + chordNotes[2], noteTime, 70, 4)
-            #print("27", progressions)
             timeline2.notes.append(note)
-            #print("28", progressions)
-        #print("29", progressions)
+            nextChordBarToGenerate += 1
 
         #add melody
         if nextNoteToGenerateIndex <= len(timeline1.notes) - 1:
-            #print("30", progressions)
             thisNoteO = timeline1.notes[nextNoteToGenerateIndex]
-            #print("31", progressions)
             if (len(timeline1.notes) > 0 and timeInto + melodyBuffer >= noteTimeToTime(thisNoteO.time, piece.bpms)):
-                #print("32", progressions)
                 lastNoteO = None
-                #print("33", progressions)
                 try:
                     lastNoteO = timeline1.notes[nextNoteToGenerateIndex - 1]
-                    #print("34", progressions)
                 except:
-                    #print("35", progressions)
                     pass
-                #print("36", progressions)
 
                 lastNote = lastNoteO.note - 12 - rootNote if lastNoteO else 99
-                #print("37", progressions)
                 chordNotes = chords.getNotesFromChord(progressions[-1][int(thisNoteO.time % 4)])
-                #print("38", progressions)
                 thisNote = generateNextNote(lastNote, thisNoteO.time, chordNotes, chords.key)
-                #print("39", progressions)
                 thisNoteO.note = thisNote + 12 + rootNote
-                #print("40", progressions)
                 nextNoteToGenerateIndex += 1
-                #print("41", progressions)
-        #print("42", progressions)
 
         #add drums
         if timeInto + drumBuffer >= noteTimeToTime(nextDrumBarToGenerate * 4, piece.bpms):
-            nextDrumBarToGenerate += 1
+            
             drums.pasteDrumLoop(currentDrumPattern, timeline3, nextDrumBarToGenerate*4)
+            nextDrumBarToGenerate += 1
 
 def play():
     global timeline1, piece

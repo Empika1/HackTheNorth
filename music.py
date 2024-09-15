@@ -59,10 +59,10 @@ class Piece:
         self.bpms = bpms
         self.timelines = timelines
 
-startTime = time.time()
+startTime = time.time() + 1
 def init():
     global startTime
-    startTime = time.time()
+    startTime = time.time() + 1
 
 def noteTimeToTime(noteTime, bpms):
     lastBpmNoteTime = 0

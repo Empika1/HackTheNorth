@@ -33,7 +33,7 @@ def determineSpeed(rhythm): #takes 1 beat rhythm
         noteLength = (rhythm[i + 1] if i < len(rhythm) - 1 else 4) - rhythm[i]
         if noteLength == shortestNoteLength:
             totalSpeed += 1 / shortestNoteLength
-    return totalSpeed
+    return totalSpeed ** 0.25
 
 def all4BeatRhythms(divisor):
     rhythmsUnformatted = []
@@ -54,7 +54,8 @@ def all4BeatRhythms(divisor):
     # print(rhythms[-1])
     return rhythms
 
-rhythms = [(i, determineSyncopation(i), determineSpeed(i)) for i in all4BeatRhythms(0.25)]
+all4BeatRhythms_ = all4BeatRhythms(1/4)
+rhythms = [(i, determineSyncopation(i), determineSpeed(i)) for i in all4BeatRhythms_]
 minSyncopation = min(rhythms, key=lambda x: x[1])[1]
 maxSyncopation = max(rhythms, key=lambda x: x[1])[1]
 minSpeed = min(rhythms, key=lambda x: x[2])[2]
@@ -72,33 +73,56 @@ maxSpeed = max(rhythms, key=lambda x: x[2])[2]
 # for i in rhythms:
 #     print(i, file=file)
 
+schemes = [
+    ("AAAA" * 2, (0, 0, 0, 0) * 2),
+    ("AABB" * 4, (0.1, 0.1, -0.15, -0.15) * 4),
+    ("AAAB" * 4, (0.05, 0.05, 0.05, -0.3) * 4),
+    ("AABC" * 4, (0.05, 0.05, -0.1, -0.35) * 4),
+    ("ABCD" * 4, (0.1, -0.1, 0.5, -0.15) * 4),
+    ("AAAABBBB" * 4, (1, 1, 1, 1, 1, 1, 1, 1, 1) * 4),
+    ("AABCAADE" * 4, (0.05, 0.05, -0.05, -0.15, 0.05, 0.05, -0.15, -0.35) * 4),
+]
+
+scheme = schemes[random.randint(0, len(schemes) - 1)]
+schemeRhythms = {}
+rhythmI = 0
+
+def resetRhythmScheme():
+    global schemes, scheme, schemeRhythms, rhythmI
+    schemeRhythms = {}
+
 def generateMelodyRhythm():
     global rhythms, syncopation, speed, minSyncopation, maxSyncopation, minSpeed, maxSpeed
+    global schemes, scheme, schemeRhythms, rhythmI
 
-    initialAllowedSyncopationVariance = 0
-    initialAllowedSpeedVariance = 0
-    retries = 100000
+    print(rhythmI)
+    if scheme[0][rhythmI] not in schemeRhythms:
+        initialAllowedSyncopationVariance = 0
+        initialAllowedSpeedVariance = 0
+        retries = 100000
 
-    for i in range(retries + 1):
-        allowedSyncopationVariance = (initialAllowedSyncopationVariance * (1 - i / retries) + 1 * (i / retries)) ** 1.5
-        allowedSpeedVariance = (initialAllowedSpeedVariance * (1 - i / retries) + 1 * (i / retries)) ** 4
+        for i in range(retries + 1):
+            allowedSyncopationVariance = (initialAllowedSyncopationVariance * (1 - i / retries) + 1 * (i / retries)) ** 1.5
+            allowedSpeedVariance = (initialAllowedSpeedVariance * (1 - i / retries) + 1 * (i / retries)) ** 4
 
-        potentialIndex = random.randint(0, len(rhythms) - 1)
-        indexSyncopation = (rhythms[potentialIndex][1] - minSyncopation) / (maxSyncopation - minSyncopation)
-        indexSpeed = (rhythms[potentialIndex][2] - minSpeed) / (maxSpeed - minSpeed)
-        if (abs(indexSyncopation - syncopation) <= allowedSyncopationVariance and
-            abs(indexSpeed - speed) <= allowedSpeedVariance):
-            # print(allowedSyncopationVariance, allowedSpeedVariance)
-            return rhythms[potentialIndex][0]
+            potentialIndex = random.randint(0, len(rhythms) - 1)
+            indexSyncopation = (rhythms[potentialIndex][1] - minSyncopation) / (maxSyncopation - minSyncopation)
+            indexSpeed = (rhythms[potentialIndex][2] - minSpeed) / (maxSpeed - minSpeed)
 
-phrases = [
-    "AAAA",
-    # "AABB",
-    # "ABAB",
-    # "ABAC",
-    # "AABC",
-    # "ABCD"
-]
+            modifiedSpeed = max(0, min(speed + scheme[1][rhythmI], 1)) #so different rhythms can have different speeds
+            if (abs(indexSyncopation - syncopation) <= allowedSyncopationVariance and
+                abs(indexSpeed - modifiedSpeed) <= allowedSpeedVariance):
+                # print(allowedSyncopationVariance, allowedSpeedVariance)
+                schemeRhythms[scheme[0][rhythmI]] = rhythms[potentialIndex][0]
+                break
+    rhythmToReturn = schemeRhythms[scheme[0][rhythmI]]
+    if rhythmI == len(scheme[0]) - 1:
+        scheme = schemes[random.randint(0, len(schemes) - 1)]
+        resetRhythmScheme()
+        print(scheme[0])
+    rhythmI = (rhythmI + 1) % len(scheme[0])
+    return rhythmToReturn
+
 
 def generate4BarRhythm():
     global sporadicness, phrases
