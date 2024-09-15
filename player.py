@@ -9,6 +9,8 @@ import music
 from music import Note, Timeline, Piece, noteTimeToTime, playPiece, init, stopPlaying
 import chords
 from chords import getNotesFromChord
+import melody
+from melody import generateNextNote
 import sv_ttk
 
 # Create the main window
@@ -82,12 +84,14 @@ def editMusic():
     nextRhythmBarToGenerate = 0
 
     #chord vars
-    chordBuffer = 0.25 #seconds
+    chordBuffer = 0.25
     progressions = [chords.generateProgression()] #last progression is the currently playing one
     nextChordBarToGenerate = 0
     rootNote = 44 + random.randint(0,7)
 
     #melody vars
+    melodyBuffer = 0.1
+    nextNoteToGenerateIndex = 0
 
     #drum vars
 
@@ -118,19 +122,38 @@ def editMusic():
                 timeline1.notes.append(note)
         
         #add chords        
-        if timeInto + chordBuffer > noteTimeToTime(nextChordBarToGenerate * 4, piece.bpms):
+        if timeInto + chordBuffer >= noteTimeToTime(nextChordBarToGenerate * 4, piece.bpms):
             nextChordBarToGenerate += 1
-            notes = getNotesFromChord(progressions[-1][nextChordBarToGenerate % 4])
-            print("chordin")
+            print("b4 3", progressions)
+            chordNotes = getNotesFromChord(progressions[-1][nextChordBarToGenerate % 4])
+            print("af 3", progressions)
             noteTime = nextChordBarToGenerate * 4
-            note = Note(rootNote + notes[0], noteTime, 55, 4)
+            note = Note(rootNote + chordNotes[0], noteTime, 55, 4)
             timeline2.notes.append(note)
-            note = Note(rootNote + notes[1], noteTime, 55, 4)
+            note = Note(rootNote + chordNotes[1], noteTime, 55, 4)
             timeline2.notes.append(note) 
-            note = Note(rootNote + notes[2], noteTime, 55, 4)
+            note = Note(rootNote + chordNotes[2], noteTime, 55, 4)
             timeline2.notes.append(note)
 
         #add melody
+        # if nextNoteToGenerateIndex <= len(timeline1.notes) - 1:
+        #     thisNoteO = timeline1.notes[nextNoteToGenerateIndex]
+        #     if (len(timeline1.notes) > 0 and timeInto + melodyBuffer >= noteTimeToTime(thisNoteO.time, piece.bpms)):
+        #         lastNoteO = None
+        #         try:
+        #             lastNoteO = timeline1.notes[nextNoteToGenerateIndex - 1]
+        #         except:
+        #             pass
+
+        #         lastNote = lastNoteO.note - 12 - rootNote if lastNoteO else 99
+        #         print("b4 4", progressions)
+        #         chordNotes = progressions[-1][int(thisNoteO.time % 4)]
+        #         print("af 4", progressions)
+        #         thisNote = generateNextNote(lastNote, thisNoteO.time, chordNotes, chords.key)
+        #         #print(thisNote)
+        #         thisNoteO.note = thisNote + 12 + rootNote
+        #         nextNoteToGenerateIndex += 1
+                #print(nextNoteToGenerateIndex)
 
         #add drums
 
