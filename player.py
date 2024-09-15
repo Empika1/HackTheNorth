@@ -194,16 +194,16 @@ def determineEmoji(dict):
 
     emojiLabel.config(text=emoji)
 
-# labelFrame = ttk.Frame(root, width="400", height="300")
-# labelFrame.pack_propagate(False)
-# camLabel = ttk.Label(labelFrame, text="yes") 
-# camLabel.pack(fill=tk.BOTH, expand=True)
-# labelFrame.grid(row=0, column=2, rowspan=lastI, padx=10, pady=10)
+labelFrame = ttk.Frame(root, width="400", height="300")
+labelFrame.pack_propagate(False)
+camLabel = ttk.Label(labelFrame, text="yes") 
+camLabel.pack(fill=tk.BOTH, expand=True)
+labelFrame.grid(row=0, column=2, rowspan=lastI, padx=10, pady=10)
 
-# vid = cv2.VideoCapture(0) 
-# width, height = 400, 300
-# vid.set(cv2.CAP_PROP_FRAME_WIDTH, width) 
-# vid.set(cv2.CAP_PROP_FRAME_HEIGHT, height)
+vid = cv2.VideoCapture(0) 
+width, height = 400, 300
+vid.set(cv2.CAP_PROP_FRAME_WIDTH, width) 
+vid.set(cv2.CAP_PROP_FRAME_HEIGHT, height)
 
 def update_frame():
     global frame
@@ -215,7 +215,7 @@ def update_frame():
     camLabel.configure(image=bgImage)
     camLabel.after(50, update_frame)  # Schedule the next update after 50 milliseconds
 
-# update_frame()
+update_frame()
 
 music.melodyInstrument = music.rollMelodyInstrument(drums.intensity)
 music.harmonyInstrument = music.rollHarmonyInstrument(drums.intensity)
