@@ -74,13 +74,13 @@ maxSpeed = max(rhythms, key=lambda x: x[2])[2]
 #     print(i, file=file)
 
 schemes = [
-    ("AAAA" * 2, (0, 0, 0, 0) * 2),
-    ("AABB" * 4, (0.1, 0.1, -0.15, -0.15) * 4),
-    ("AAAB" * 4, (0.05, 0.05, 0.05, -0.3) * 4),
-    ("AABC" * 4, (0.05, 0.05, -0.1, -0.35) * 4),
-    ("ABCD" * 4, (0.1, -0.1, 0.5, -0.15) * 4),
-    ("AAAABBBB" * 4, (0, 0, 0, 0, 0, 0, 0, 0) * 4),
-    ("AABCAADE" * 4, (0.05, 0.05, -0.05, -0.15, 0.05, 0.05, -0.15, -0.35) * 4),
+    ("AAAA" * 1, (0, 0, 0, 0) * 1),
+    ("AABB" * 1, (0.1, 0.1, -0.15, -0.15) * 1),
+    ("AAAB" * 1, (0.05, 0.05, 0.05, -0.3) * 1),
+    ("AABC" * 1, (0.05, 0.05, -0.1, -0.35) * 1),
+    ("ABCD" * 1, (0.1, -0.1, 0.5, -0.15) * 1),
+    ("AAAABBBB" * 1, (0, 0, 0, 0, 0, 0, 0, 0) * 1),
+    ("AABCAADE" * 1, (0.05, 0.05, -0.05, -0.15, 0.05, 0.05, -0.15, -0.35) * 1),
 ]
 
 scheme = schemes[random.randint(0, len(schemes) - 1)]
@@ -91,9 +91,11 @@ def resetRhythmScheme():
     global schemes, scheme, schemeRhythms, rhythmI
     schemeRhythms = {}
 
-def generateMelodyRhythm():
+resetBar = 0
+
+def generateMelodyRhythm(bar):
     global rhythms, syncopation, speed, minSyncopation, maxSyncopation, minSpeed, maxSpeed
-    global schemes, scheme, schemeRhythms, rhythmI
+    global schemes, scheme, schemeRhythms, rhythmI, resetBar
 
     if scheme[0][rhythmI] not in schemeRhythms:
         initialAllowedSyncopationVariance = 0
@@ -101,7 +103,6 @@ def generateMelodyRhythm():
         retries = 100000
 
         modifiedSpeed = max(0, min(speed + scheme[1][rhythmI], 1)) #so different rhythms can have different speeds
-        print(modifiedSpeed)
         for i in range(retries + 1):
             allowedSyncopationVariance = (initialAllowedSyncopationVariance * (1 - i / retries) + 1 * (i / retries)) ** 1.5
             allowedSpeedVariance = (initialAllowedSpeedVariance * (1 - i / retries) + 1 * (i / retries)) ** 4
@@ -118,6 +119,7 @@ def generateMelodyRhythm():
     if rhythmI == len(scheme[0]) - 1:
         scheme = schemes[random.randint(0, len(schemes) - 1)]
         resetRhythmScheme()
+        resetBar = bar
     rhythmI = (rhythmI + 1) % len(scheme[0])
     return rhythmToReturn
 

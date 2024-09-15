@@ -76,7 +76,7 @@ timeline1 = Timeline(music.melodyInstrument, [])
 timeline2 = Timeline(music.harmonyInstrument, [])
 timeline3 = Timeline(music.drumInstrument, [])
 
-piece = Piece([(120, 0)], [timeline1, timeline2, timeline3])
+piece = Piece([(180, 0)], [timeline1, timeline2, timeline3])
 
 def editMusic():
     global timeline1, timeline2, timeline3, piece, done
@@ -96,6 +96,7 @@ def editMusic():
     #melody rhythm vars
     melodyBuffer = 0.75 #seconds
     nextRhythmBarToGenerate = 0
+    oldRhythmI = 0
 
     #chord vars
     chordBuffer = 0.25
@@ -130,7 +131,11 @@ def editMusic():
             current4Bar = currentBar // 4
         getTimes()
 
-        if oldDissonance != chords.dissonance or oldCreativity != chords.creativity or oldMajorness != chords.majorness:
+        if (oldDissonance != chords.dissonance or oldCreativity != chords.creativity or oldMajorness != chords.majorness
+            or currentBar == rhythm.resetBar):
+            if currentBar == rhythm.resetBar:
+                print("reset")
+                rhythm.resetBar = 999999999999999999999999
             newprog = chords.generateProgression()
             progressions.append(newprog)
             chords.key = random.choices(["Major","Minor"],[chords.majorness,1-chords.majorness])[0]
@@ -154,12 +159,12 @@ def editMusic():
         oldMajorness = chords.majorness
         oldIntensity = drums.intensity
 
-        #print("9", progressions)
+        oldRhythmI = rhythm.rhythmI
 
         #add melody rhythm
         if timeInto + melodyBuffer >= noteTimeToTime(nextRhythmBarToGenerate * 4, piece.bpms):
             nextRhythmBarToGenerate += 1
-            nextRhythm = generateMelodyRhythm()
+            nextRhythm = generateMelodyRhythm(currentBar)
             for j in range(len(nextRhythm)):
                 noteLen = (nextRhythm[j + 1] if j < len(nextRhythm) - 1 else 4) - nextRhythm[j]
                 note = Note(60, nextRhythm[j] + currentBar * 4, 70, noteLen)
