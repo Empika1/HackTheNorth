@@ -20,6 +20,7 @@ import groqstuff
 # Create the main window
 root = tk.Tk()
 root.title("AutOST")
+root.resizable(False, False)
 
 sv_ttk.set_theme("dark")
 
@@ -67,9 +68,9 @@ for(i, slider) in enumerate(sliders):
     ttk.Label(root, text=slider).grid(row=i+1, column=0, padx=10, pady=10)
     slider = ttk.Scale(root, from_=0, to=100, orient='horizontal')
     slider.bind("<ButtonRelease-1>", lambda _, function_=function, slider_=slider: function_(slider_.get()))
-    slider.grid(row=i, column=1, padx=10, pady=10)
+    slider.grid(row=i+1, column=1, padx=10, pady=10)
     sliderScales.append(slider)
-    lastI = i + 1
+    lastI = i + 2
 
 editThread = None
 playThread = None
@@ -139,12 +140,12 @@ def groqIt():
     moveTheSliders(dict)
     determineEmoji(dict)
 
-logoFrame = ttk.Frame(root, width="400", height="160")
+logoFrame = ttk.Frame(root, width="300", height="74")
 logoFrame.pack_propagate(False)
 logoImg = tk.PhotoImage(file="AutOST.png")
 logo = ttk.Label(logoFrame, image = logoImg)
 logo.pack()
-logoFrame.grid(row = 0, column = 0, columnspan=3, padx = 10, pady = 0)
+logoFrame.grid(row = 0, column = 0, columnspan=3, padx = 10, pady = (20, 10))
 
 playButton = ttk.Button(root, text="Play", command=start)
 playButton.grid(row=lastI, column=0, padx=10, pady=10)
@@ -198,7 +199,7 @@ labelFrame = ttk.Frame(root, width="400", height="300")
 labelFrame.pack_propagate(False)
 camLabel = ttk.Label(labelFrame, text="yes") 
 camLabel.pack(fill=tk.BOTH, expand=True)
-labelFrame.grid(row=0, column=2, rowspan=lastI, padx=10, pady=10)
+labelFrame.grid(row=1, column=2, rowspan=lastI - 1, padx=10, pady=10)
 
 vid = cv2.VideoCapture(0) 
 width, height = 400, 300
