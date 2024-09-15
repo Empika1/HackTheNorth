@@ -15,7 +15,7 @@ drumLoops = [
     [[1,1,1,1],[0,1,0,1],[1,1,1,1,1,1,1,1]],
     [[1,0,0,1,1,0,0,0],[0,1,0,1],[0,1,0,1,0,1,0,1]],
     [[1,1,1,1],[0,1,0,1],[1,1,1,1,1,1,1,1],[1]],
-    [[1,0,1,1,1,0,1,1,1,0,1,1,1,1,1,1],[1,0,0,1,0,0,1,0,0,1,0,0,1,0,1,0],[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[1]]
+    [[1,0,1,1,1,0,1,1,1,0,1,1,1,1,1,1],[1,0,0,1,0,0,1,0,0,1,0,0,1,0,1,0],[1,1,1,1,1,1,1,1],[1]]
 ]
 
 drumOutputs = [35, 38, 44, 49]
@@ -26,8 +26,8 @@ def chooseDrumLoop():
         pick += random.randint(0,2)-1
     return drumLoops[pick]
 
-def pasteDrumLoop(loop, timeline, time):
+def pasteDrumLoop(loop, timeline, time, intensity):
     for beat in range(32):
         for track in range(len(loop)):
             if beat % (32 / len(loop[track])) == 0 and loop[track][int(beat / (32 / len(loop[track])))] == 1: 
-                timeline.notes.append(Note(drumOutputs[track], time + beat/8, 70, 1))
+                timeline.notes.append(Note(drumOutputs[track], time + beat/8, 60 + int(intensity * 30), 1))

@@ -267,14 +267,22 @@ def editMusic():
 
                 lastNote = lastNoteO.note - 12 - rootNote if lastNoteO else 99
                 chordNotes = chords.getNotesFromChord(progressions[-1][int(thisNoteO.time % 4)])
-                thisNote = generateNextNote(lastNote, thisNoteO.time, chordNotes, chords.key)
+                if thisNoteO.time % 4 < 3:
+                    nextChordNotes = chords.getNotesFromChord(progressions[-1][int(thisNoteO.time % 4)+1])
+                else: 
+                    nextChordNotes = chords.getNotesFromChord(progressions[-1][0])
+                thisNote = generateNextNote(lastNote, thisNoteO.time, chordNotes, chords.key, nextChordNotes, rhythm.speed)
+                if thisNoteO.time % 4 == 0:
+                    thisNoteO.velocity += 8
+                if thisNoteO.time % 2 == 0:
+                    thisNoteO.velocity += 5
                 thisNoteO.note = thisNote + 12 + rootNote
                 nextNoteToGenerateIndex += 1
 
         #add drums
         if timeInto + drumBuffer >= noteTimeToTime(nextDrumBarToGenerate * 4, piece.bpms):
             
-            drums.pasteDrumLoop(currentDrumPattern, timeline3, nextDrumBarToGenerate*4)
+            drums.pasteDrumLoop(currentDrumPattern, timeline3, nextDrumBarToGenerate*4, drums.intensity)
             nextDrumBarToGenerate += 1
         
 
