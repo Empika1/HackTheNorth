@@ -116,6 +116,10 @@ def groqIt():
     except:
         pass
 
+logoFrame = ttk.Frame(root, width="400", height="160")
+logoFrame.pack_propagate(False)
+logo = ttk.Label(logoFrame)
+
 playButton = ttk.Button(root, text="Play", command=start)
 playButton.grid(row=lastI, column=0, padx=10, pady=10)
 
@@ -148,6 +152,9 @@ def update_frame():
 
 update_frame()
 
+music.melodyInstrument = music.rollMelodyInstrument(drums.intensity)
+music.harmonyInstrument = music.rollHarmonyInstrument(drums.intensity)
+music.drumInstrument = 8
 timeline1 = Timeline(music.melodyInstrument, [])
 timeline2 = Timeline(music.harmonyInstrument, [])
 timeline3 = Timeline(music.drumInstrument, [])
