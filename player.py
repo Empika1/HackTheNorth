@@ -20,7 +20,7 @@ root.title("AutOST")
 
 sv_ttk.set_theme("dark")
 
-sliders = ["Syncopation", "Speed", "Sporadicness", "Dissonance", "Creativity", "Majorness", "Jumpiness"]
+sliders = ["Syncopation", "Speed", "Sporadicness", "Dissonance", "Creativity", "Majorness", "Jumpiness", "Intensity"]
 
 def onSyncopationChange(value):
     rhythm.syncopation = float(value) / 100
@@ -44,6 +44,9 @@ def onMajornessChange(value):
 def onJumpinessChange(value):
     pass
 
+def onIntensityChange(value):
+    drums.intensity = float(value) / 100
+
 functions = [
     onSyncopationChange,
     onSpeedChange,
@@ -51,7 +54,8 @@ functions = [
     onDissonanceChange,
     onCreativityChange,
     onMajornessChange,
-    onJumpinessChange
+    onJumpinessChange,
+    onIntensityChange
 ]
 
 for i in functions:
@@ -69,9 +73,10 @@ for(i, slider) in enumerate(sliders):
     slider.bind("<ButtonRelease-1>", lambda _, function_=function, slider_=slider: function_(slider_.get()))
     slider.grid(row=i, column=1, padx=5, pady=5)
 
-timeline1 = Timeline(0, [])
-timeline2 = Timeline(1, [])
-timeline3 = Timeline(2, [])
+timeline1 = Timeline(music.melodyInstrument, [])
+timeline2 = Timeline(music.harmonyInstrument, [])
+timeline3 = Timeline(music.drumInstrument, [])
+
 piece = Piece([(120, 0)], [timeline1, timeline2, timeline3])
 
 def editMusic():
@@ -85,6 +90,7 @@ def editMusic():
     oldDissonance = chords.dissonance
     oldCreativity = chords.creativity
     oldMajorness = chords.majorness
+    oldIntensity = drums.intensity
 
     #melody rhythm vars
     melodyBuffer = 0.75 #seconds
@@ -103,6 +109,7 @@ def editMusic():
     #drum vars
     drumBuffer = 0.25
     nextDrumBarToGenerate = 0
+    currentDrumPattern = drums.chooseDrumLoop()
 
     while not done:
         #general
@@ -132,10 +139,21 @@ def editMusic():
         if oldDissonance != chords.dissonance or oldCreativity != chords.creativity or oldMajorness != chords.majorness:
             newprog = chords.generateProgression()
             progressions.append(newprog)
+            chords.key = random.choices(["Major","Minor"],[chords.majorness,1-chords.majorness])[0]
+        
+        if oldIntensity != drums.intensity:
+            currentDrumPattern = drums.chooseDrumLoop()
+            music.stopCurrentNotes(timeline1,0)
+            music.stopCurrentNotes(timeline2,1)
+            melodyInstrument = music.rollMelodyInstrument(drums.intensity)
+            timeline1.channel = melodyInstrument
+            harmonyInstrument = music.rollHarmonyInstrument(drums.intensity)
+            timeline2.channel = harmonyInstrument
 
         oldDissonance = chords.dissonance
         oldCreativity = chords.creativity
         oldMajorness = chords.majorness
+        oldIntensity = drums.intensity
 
         #print("9", progressions)
 
@@ -213,7 +231,7 @@ def editMusic():
         #add drums
         if timeInto + drumBuffer >= noteTimeToTime(nextDrumBarToGenerate * 4, piece.bpms):
             nextDrumBarToGenerate += 1
-            drums.pasteDrumLoop("FullRock", timeline3, nextDrumBarToGenerate*4)
+            drums.pasteDrumLoop(currentDrumPattern, timeline3, nextDrumBarToGenerate*4)
 
 def play():
     global timeline1, piece
@@ -231,7 +249,7 @@ def on_closing():
 
 root.protocol("WM_DELETE_WINDOW", on_closing)
 
-random.seed(0)
+#random.seed(0)
 editThread = threading.Thread(target=editMusic)
 editThread.start()
 

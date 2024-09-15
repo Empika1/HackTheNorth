@@ -1,10 +1,46 @@
 import mido
 import time
 import pygame.midi
+import random
 
 mido.set_backend("mido.backends.portmidi")
 
 out = mido.open_output("LoopBe Internal MIDI")
+
+melodyInstruments = {
+    0 : "Piano",
+    1 : "Bell",
+    2 : "Brass",
+    3 : "Bass"
+}
+
+def rollMelodyInstrument(intensity):
+    di = intensity
+    pick = random.choices([0,1,2,3],[1-di, 1-di, di, di])[0]
+    return pick
+melodyInstrument = rollMelodyInstrument(0)
+
+harmonyInstruments = {
+    4 : "Rhodes",
+    5 : "Flute",
+    6 : "Piano",
+    7 : "Strings"
+}
+
+def rollHarmonyInstrument(intensity):
+    di = intensity
+    pick = random.choices([4,5,6,7],[1-di, di, di, 1-di/2])[0]
+    return pick
+harmonyInstrument = rollHarmonyInstrument(0)
+
+drumInstruments = {
+    8 : "Rock",
+    9 : "Funk",
+    10 : "Jazz",
+    11 : "Thrower"
+}
+
+drumInstrument = random.randint(7,11)
 
 class Note:
     def __init__(self, note, time, velocity, length): #length of 1 is a quarter note
@@ -44,13 +80,22 @@ def noteTimeToTime(noteTime, bpms):
             break
     return (noteTime - lastBpmNoteTime) * 60 / lastBpm + lastBpmTime
 
+def stopCurrentNotes(timeline,timelineNum):
+    global timelineOnIs, timelineOffIs
+    channel = timeline.channel
+    notes = timeline.notes
+    for i in range(timelineOnIs[timelineNum] - timelineOffIs[timelineNum]):
+        currentOffNote = notes[timelineOffIs[timelineNum]]
+        out.send(mido.Message('note_off', note=currentOffNote.note, velocity=currentOffNote.velocity, channel=channel))
+        timelineOffIs[timelineNum] += 1
+
 def playTimeline(timeline, bpms, timelineOnI, timelineOffI): #kind of a coroutine. yields back to playPiece
     channel = timeline.channel
     notes = timeline.notes
 
     timelineOnI_ = timelineOnI
     timelineOffI_ = timelineOffI
-
+    
     global startTime
     currentTime = time.time()
     if timelineOffI_ < len(notes):
@@ -75,7 +120,7 @@ def playTimeline(timeline, bpms, timelineOnI, timelineOffI): #kind of a coroutin
 
 done = False
 def playPiece(piece, stopAutomatically = False):
-    global done
+    global done, timelineOnIs, timelineOffIs
     timelines = piece.timelines
     bpms = piece.bpms
 

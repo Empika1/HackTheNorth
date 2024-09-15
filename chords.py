@@ -193,5 +193,5 @@ def getNotesFromChord(c):
     newnotes = []
     for i in range(len(notes)):
         newnotes.append(notes[i] + c[0])
-        
+    
     return newnotes
