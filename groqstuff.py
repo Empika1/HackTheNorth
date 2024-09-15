@@ -13,9 +13,13 @@ def load_image(image_path):
     base64_image = encode_image(image_path)
     return base64_image
 
+file = open("token.txt", "r")
+apikey = file.read()
+file.close()
+
 client = Groq(
     # This is the default and can be omitted
-    api_key="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",
+    api_key=apikey,
 )
 
 IMGprompt = ("Describe in great detail the facial expresions and body language of the largest and most prevalent person in the image. Also, start every description by saying START:")
