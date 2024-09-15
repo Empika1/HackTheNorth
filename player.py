@@ -141,7 +141,10 @@ def groqIt():
 
 logoFrame = ttk.Frame(root, width="400", height="160")
 logoFrame.pack_propagate(False)
-logo = ttk.Label(logoFrame)
+logoImg = tk.PhotoImage(file="AutOST.png")
+logo = ttk.Label(logoFrame, image = logoImg)
+logo.pack()
+logoFrame.grid(row = 0, column = 0, padx = 10, pady = 0)
 
 playButton = ttk.Button(root, text="Play", command=start)
 playButton.grid(row=lastI, column=0, padx=10, pady=10)
