@@ -120,6 +120,9 @@ def editMusic():
                 noteLen = (nextRhythm[j + 1] if j < len(nextRhythm) - 1 else 4) - nextRhythm[j]
                 note = Note(60, nextRhythm[j] + currentBar * 4, 70, noteLen)
                 timeline1.notes.append(note)
+            print("b4 2", progressions)
+            chordNotes = getNotesFromChord(progressions[-1][nextChordBarToGenerate % 4])
+            print("af 2", progressions)
         
         #add chords        
         if timeInto + chordBuffer >= noteTimeToTime(nextChordBarToGenerate * 4, piece.bpms):
@@ -136,24 +139,24 @@ def editMusic():
             timeline2.notes.append(note)
 
         #add melody
-        # if nextNoteToGenerateIndex <= len(timeline1.notes) - 1:
-        #     thisNoteO = timeline1.notes[nextNoteToGenerateIndex]
-        #     if (len(timeline1.notes) > 0 and timeInto + melodyBuffer >= noteTimeToTime(thisNoteO.time, piece.bpms)):
-        #         lastNoteO = None
-        #         try:
-        #             lastNoteO = timeline1.notes[nextNoteToGenerateIndex - 1]
-        #         except:
-        #             pass
+        if nextNoteToGenerateIndex <= len(timeline1.notes) - 1:
+            thisNoteO = timeline1.notes[nextNoteToGenerateIndex]
+            if (len(timeline1.notes) > 0 and timeInto + melodyBuffer >= noteTimeToTime(thisNoteO.time, piece.bpms)):
+                lastNoteO = None
+                try:
+                    lastNoteO = timeline1.notes[nextNoteToGenerateIndex - 1]
+                except:
+                    pass
 
-        #         lastNote = lastNoteO.note - 12 - rootNote if lastNoteO else 99
-        #         print("b4 4", progressions)
-        #         chordNotes = progressions[-1][int(thisNoteO.time % 4)]
-        #         print("af 4", progressions)
-        #         thisNote = generateNextNote(lastNote, thisNoteO.time, chordNotes, chords.key)
-        #         #print(thisNote)
-        #         thisNoteO.note = thisNote + 12 + rootNote
-        #         nextNoteToGenerateIndex += 1
-                #print(nextNoteToGenerateIndex)
+                lastNote = lastNoteO.note - 12 - rootNote if lastNoteO else 99
+                print("b4 4", progressions)
+                chordNotes = progressions[-1][int(thisNoteO.time % 4)]
+                print("af 4", progressions)
+                thisNote = generateNextNote(lastNote, thisNoteO.time, chordNotes, chords.key)
+                #print(thisNote)
+                thisNoteO.note = thisNote + 12 + rootNote
+                nextNoteToGenerateIndex += 1
+                print(nextNoteToGenerateIndex)
 
         #add drums
 
@@ -173,6 +176,7 @@ def on_closing():
 
 root.protocol("WM_DELETE_WINDOW", on_closing)
 
+random.seed(0)
 editThread = threading.Thread(target=editMusic)
 editThread.start()
 
