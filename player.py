@@ -61,10 +61,10 @@ frame.grid(row=0, column=0, sticky=(tk.W, tk.E, tk.N, tk.S))
 
 sliderScales = []
 #add the sliders
-lastI = 0
+lastI = 1
 for(i, slider) in enumerate(sliders):
     function = functions[i]
-    ttk.Label(root, text=slider).grid(row=i, column=0, padx=10, pady=10)
+    ttk.Label(root, text=slider).grid(row=i+1, column=0, padx=10, pady=10)
     slider = ttk.Scale(root, from_=0, to=100, orient='horizontal')
     slider.bind("<ButtonRelease-1>", lambda _, function_=function, slider_=slider: function_(slider_.get()))
     slider.grid(row=i, column=1, padx=10, pady=10)
@@ -145,7 +145,7 @@ logoFrame.pack_propagate(False)
 logoImg = tk.PhotoImage(file="AutOST.png")
 logo = ttk.Label(logoFrame, image = logoImg)
 logo.pack()
-logoFrame.grid(row = 0, column = 0, padx = 10, pady = 0)
+logoFrame.grid(row = 0, column = 0, columnspan=3, padx = 10, pady = 0)
 
 playButton = ttk.Button(root, text="Play", command=start)
 playButton.grid(row=lastI, column=0, padx=10, pady=10)
@@ -156,16 +156,16 @@ quitButton.grid(row=lastI, column=1, padx=10, pady=10)
 groqButton = ttk.Button(root, text="Determine Emotion with Groq", command=groqIt)
 groqButton.grid(row=lastI, column=2, padx=10, pady=10)
 
-labelFrame = ttk.Frame(root, width="400", height="300")
-labelFrame.pack_propagate(False)
-camLabel = ttk.Label(labelFrame, text="yes") 
-camLabel.pack(fill=tk.BOTH, expand=True)
-labelFrame.grid(row=0, column=2, rowspan=lastI, padx=10, pady=10)
+# labelFrame = ttk.Frame(root, width="400", height="300")
+# labelFrame.pack_propagate(False)
+# camLabel = ttk.Label(labelFrame, text="yes") 
+# camLabel.pack(fill=tk.BOTH, expand=True)
+# labelFrame.grid(row=0, column=2, rowspan=lastI, padx=10, pady=10)
 
-vid = cv2.VideoCapture(0) 
-width, height = 400, 300
-vid.set(cv2.CAP_PROP_FRAME_WIDTH, width) 
-vid.set(cv2.CAP_PROP_FRAME_HEIGHT, height)
+# vid = cv2.VideoCapture(0) 
+# width, height = 400, 300
+# vid.set(cv2.CAP_PROP_FRAME_WIDTH, width) 
+# vid.set(cv2.CAP_PROP_FRAME_HEIGHT, height)
 
 def update_frame():
     global frame
@@ -177,7 +177,7 @@ def update_frame():
     camLabel.configure(image=bgImage)
     camLabel.after(50, update_frame)  # Schedule the next update after 50 milliseconds
 
-update_frame()
+# update_frame()
 
 music.melodyInstrument = music.rollMelodyInstrument(drums.intensity)
 music.harmonyInstrument = music.rollHarmonyInstrument(drums.intensity)
