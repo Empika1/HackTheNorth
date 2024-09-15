@@ -195,7 +195,11 @@ def editMusic():
 
                 lastNote = lastNoteO.note - 12 - rootNote if lastNoteO else 99
                 chordNotes = chords.getNotesFromChord(progressions[-1][int(thisNoteO.time % 4)])
-                thisNote = generateNextNote(lastNote, thisNoteO.time, chordNotes, chords.key)
+                if thisNoteO.time % 4 < 3:
+                    nextChordNotes = chords.getNotesFromChord(progressions[-1][int(thisNoteO.time % 4)+1])
+                else: 
+                    nextChordNotes = chords.getNotesFromChord(progressions[-1][0])
+                thisNote = generateNextNote(lastNote, thisNoteO.time, chordNotes, chords.key, nextChordNotes)
                 thisNoteO.note = thisNote + 12 + rootNote
                 nextNoteToGenerateIndex += 1
 

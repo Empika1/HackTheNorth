@@ -29,16 +29,19 @@ def findNearestNote(note, iMap):
         if iMap[note+1] == 1:
             return note+1+octaveFactor*12
 
-def generateNextNote(lastNote, time, chord, key):
+def generateNextNote(lastNote, time, chord, key, nextChord):
     global savedMainMelody, currentMelodyLog, replayingPos, savedSecondaryMelody, loopedMelody
+    #Add in the notes from the current chord (always playable)
     noteChoices = chord
     note = 99
     
+    #Set the interval map to remove notes not in key
     if key == "Major":
         iMap = majorKeyIntervalMap
     else:
         iMap = minorKeyIntervalMap
     
+    #Essentially find a random note in the key and maybe add it to the list of possible notes
     noteChecking = random.randrange(0,12)
     while iMap[noteChecking] == 0:
         noteChecking = random.randrange(0,12)
@@ -54,18 +57,9 @@ def generateNextNote(lastNote, time, chord, key):
         noteChecking += 1
         noteChecking = noteChecking % 12
     noteChoices.append(noteChecking)
-    
-    #Prioritize starting on roots
-    # if time % 4 == 0 or random.random() > creativity/4 + 0.8:
-    #     note = chord[0]
-    #     if note + 12 - lastNote <= 2:
-    #         note += 12
-    
-    if time % 16 >= 15 and key == "Minor":
-        noteChoices.append(11)
-    
-    if time % 16 >= 15 and key == "Major":
-        noteChoices.append(10)
+
+    if time % 4 >= 3:
+        noteChoices.append(int((chord[0]+nextChord[0])/2))
     
     if note == 99:
         while note - lastNote > 4:
