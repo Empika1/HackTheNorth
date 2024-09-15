@@ -12,6 +12,7 @@ from chords import getNotesFromChord
 import melody
 from melody import generateNextNote
 import sv_ttk
+import drums
 
 # Create the main window
 root = tk.Tk()
@@ -86,7 +87,7 @@ def editMusic():
     oldMajorness = chords.majorness
 
     #melody rhythm vars
-    melodyBuffer = 0.5 #seconds
+    melodyBuffer = 0.75 #seconds
     nextRhythmBarToGenerate = 0
 
     #chord vars
@@ -96,10 +97,12 @@ def editMusic():
     rootNote = 44 + random.randint(0,7)
 
     #melody vars
-    melodyBuffer = 0.1
+    melodyBuffer = 0.5
     nextNoteToGenerateIndex = 0
 
     #drum vars
+    drumBuffer = 0.25
+    nextDrumBarToGenerate = 0
 
     while not done:
         #general
@@ -204,6 +207,9 @@ def editMusic():
         #print("42", progressions)
 
         #add drums
+        if timeInto + drumBuffer >= noteTimeToTime(nextDrumBarToGenerate * 4, piece.bpms):
+            nextDrumBarToGenerate += 1
+            drums.pasteDrumLoop("FullRock", timeline3, nextDrumBarToGenerate*4)
 
 def play():
     global timeline1, piece
