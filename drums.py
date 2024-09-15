@@ -22,7 +22,7 @@ drumOutputs = [35, 38, 44, 49]
 
 def chooseDrumLoop():
     pick = int(intensity * (len(drumLoops)-1))
-    if pick != len(drumLoops)-1:
+    if pick != len(drumLoops)-1 and pick != 0:
         pick += random.randint(0,2)-1
     return drumLoops[pick]
 
