@@ -23,16 +23,13 @@ root.title("AutOST")
 
 sv_ttk.set_theme("dark")
 
-sliders = ["Syncopation", "Speed", "Sporadicness", "Dissonance", "Creativity", "Majorness", "Jumpiness", "Intensity"]
+sliders = ["Syncopation", "Speed", "Dissonance", "Creativity", "Majorness", "Intensity"]
 
 def onSyncopationChange(value):
     rhythm.syncopation = float(value) / 100
 
 def onSpeedChange(value):
     rhythm.speed = float(value) / 100
-
-def onSporadicnessChange(value):
-    rhythm.sporadicness = float(value) / 100
 
 def onDissonanceChange(value):
     chords.dissonance = float(value) / 100
@@ -43,20 +40,15 @@ def onCreativityChange(value):
 def onMajornessChange(value):
     chords.majorness = float(value) / 100
 
-def onJumpinessChange(value):
-    pass
-
 def onIntensityChange(value):
     drums.intensity = float(value) / 100
 
 functions = [
     onSyncopationChange,
     onSpeedChange,
-    onSporadicnessChange,
     onDissonanceChange,
     onCreativityChange,
     onMajornessChange,
-    onJumpinessChange,
     onIntensityChange
 ]
 
@@ -67,6 +59,7 @@ for i in functions:
 frame = ttk.Frame(root, padding="10")
 frame.grid(row=0, column=0, sticky=(tk.W, tk.E, tk.N, tk.S))
 
+sliderScales = []
 #add the sliders
 lastI = 0
 for(i, slider) in enumerate(sliders):
@@ -75,6 +68,7 @@ for(i, slider) in enumerate(sliders):
     slider = ttk.Scale(root, from_=0, to=100, orient='horizontal')
     slider.bind("<ButtonRelease-1>", lambda _, function_=function, slider_=slider: function_(slider_.get()))
     slider.grid(row=i, column=1, padx=10, pady=10)
+    sliderScales.append(slider)
     lastI = i + 1
 
 editThread = None
@@ -102,19 +96,49 @@ def onClosing():
     playThread.join()
     # groqThread.join()
 
+def clamp(val, min, max):
+    if val < min:
+        return min
+    if val > max:
+        return max
+    return val
+
+def moveTheSliders(dict):
+    global sliderScales
+    dict['Fear'] = ((dict['Fear'] / 100) ** 0.5) * 100
+    dict['Anger'] = ((dict['Anger'] / 100) ** 0.5) * 100
+    dict['Happiness'] = ((dict['Happiness'] / 100) ** 2) * 100
+    dict['Calmness'] = ((dict['Calmness'] / 100) ** 2) * 100
+    print(dict)
+
+    rhythm.syncopation = clamp(dict['Fear'] / 100 - dict['Calmness'] / 200, 0, 1)
+    rhythm.speed = clamp(dict['Happiness'] / 300 + dict['Fear'] / 300 + dict['Anger'] / 300 - dict['Calmness'] / 200, 0, 1)
+    chords.dissonance = clamp(dict['Fear'] / 250 + dict['Anger'] / 250, 0, 1)
+    chords.creativity = clamp(dict['Calmness'] / 200, 0, 1)
+    if dict['Happiness'] > 50:
+        chords.majorness = 1
+    else:
+        chords.majorness = 0
+    drums.intensity = clamp(dict['Happiness'] / 300 + dict['Fear'] / 300 + dict['Anger'] / 100 - dict['Calmness'] / 400, 0, 1)
+    sliderScales[0].set(int(rhythm.syncopation * 100))
+    sliderScales[1].set(int(rhythm.speed * 100))
+    sliderScales[2].set(int(chords.dissonance * 100))
+    sliderScales[3].set(int(chords.creativity * 100))
+    sliderScales[4].set(int(chords.majorness * 100))
+    sliderScales[5].set(int(drums.intensity * 100))
+
+
 frame = None
 def groqIt():
     global frame
     img_name = "pic.png"
     cv2.imwrite(img_name, frame)
-    try:
+    dict = None
+    while not dict:
         desc = groqstuff.list_emotions(img_name)
-        groqstuff.json_to_dict(desc)
-        # print(desc)
-        print(groqstuff.json_to_dict(desc))
-        # print("a")
-    except:
-        pass
+        dict = groqstuff.json_to_dict(desc)
+    print(dict)
+    moveTheSliders(dict)
 
 logoFrame = ttk.Frame(root, width="400", height="160")
 logoFrame.pack_propagate(False)
