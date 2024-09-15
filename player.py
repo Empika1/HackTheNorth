@@ -200,6 +200,10 @@ def editMusic():
                 else: 
                     nextChordNotes = chords.getNotesFromChord(progressions[-1][0])
                 thisNote = generateNextNote(lastNote, thisNoteO.time, chordNotes, chords.key, nextChordNotes, rhythm.speed)
+                if thisNoteO.time % 4 == 0:
+                    thisNoteO.velocity += 8
+                if thisNoteO.time % 2 == 0:
+                    thisNoteO.velocity += 5
                 thisNoteO.note = thisNote + 12 + rootNote
                 nextNoteToGenerateIndex += 1
 
@@ -226,7 +230,7 @@ def onClosing():
 
 root.protocol("WM_DELETE_WINDOW", onClosing)
 
-random.seed(31)
+#random.seed(31)
 editThread = threading.Thread(target=editMusic)
 editThread.start()
 
