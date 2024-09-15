@@ -129,6 +129,10 @@ def editMusic():
             current4Bar = currentBar // 4
         getTimes()
 
+        if oldDissonance != chords.dissonance or oldCreativity != chords.creativity or oldMajorness != chords.majorness:
+            newprog = chords.generateProgression()
+            progressions.append(newprog)
+
         oldDissonance = chords.dissonance
         oldCreativity = chords.creativity
         oldMajorness = chords.majorness
@@ -163,15 +167,15 @@ def editMusic():
             #print("21", progressions)
             noteTime = nextChordBarToGenerate * 4
             #print("22", progressions)
-            note = Note(rootNote + chordNotes[0], noteTime, 55, 4)
+            note = Note(rootNote + chordNotes[0], noteTime, 70, 4)
             #print("23", progressions)
             timeline2.notes.append(note)
             #print("24", progressions)
-            note = Note(rootNote + chordNotes[1], noteTime, 55, 4)
+            note = Note(rootNote + chordNotes[1], noteTime, 70, 4)
             #print("25", progressions)
             timeline2.notes.append(note)
             #print("26", progressions)
-            note = Note(rootNote + chordNotes[2], noteTime, 55, 4)
+            note = Note(rootNote + chordNotes[2], noteTime, 70, 4)
             #print("27", progressions)
             timeline2.notes.append(note)
             #print("28", progressions)
