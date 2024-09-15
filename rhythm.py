@@ -74,13 +74,13 @@ maxSpeed = max(rhythms, key=lambda x: x[2])[2]
 #     print(i, file=file)
 
 schemes = [
-    ("AAAA" * 1, (0, 0, 0, 0) * 1),
-    ("AABB" * 1, (0.1, 0.1, -0.15, -0.15) * 1),
-    ("AAAB" * 1, (0.05, 0.05, 0.05, -0.3) * 1),
-    ("AABC" * 1, (0.05, 0.05, -0.1, -0.35) * 1),
-    ("ABCD" * 1, (0.1, -0.1, 0.5, -0.15) * 1),
-    ("AAAABBBB" * 1, (0, 0, 0, 0, 0, 0, 0, 0) * 1),
-    ("AABCAADE" * 1, (0.05, 0.05, -0.05, -0.15, 0.05, 0.05, -0.15, -0.35) * 1),
+    ("AAAA" * 4, (0, 0, 0, 0) * 4),
+    ("AABB" * 4, (0.1, 0.1, -0.15, -0.15) * 4),
+    ("AAAB" * 4, (0.05, 0.05, 0.05, -0.3) * 4),
+    ("AABC" * 4, (0.05, 0.05, -0.1, -0.35) * 4),
+    ("ABCD" * 4, (0.1, -0.1, 0.5, -0.15) * 4),
+    ("AAAABBBB" * 4, (0, 0, 0, 0, 0, 0, 0, 0) * 4),
+    ("AABCAADE" * 4, (0.05, 0.05, -0.05, -0.15, 0.05, 0.05, -0.15, -0.35) * 4),
 ]
 
 scheme = schemes[random.randint(0, len(schemes) - 1)]
@@ -93,9 +93,9 @@ def resetRhythmScheme():
 
 resetBar = 0
 
-def generateMelodyRhythm(bar):
+def generateMelodyRhythm():
     global rhythms, syncopation, speed, minSyncopation, maxSyncopation, minSpeed, maxSpeed
-    global schemes, scheme, schemeRhythms, rhythmI, resetBar
+    global schemes, scheme, schemeRhythms, rhythmI
 
     if scheme[0][rhythmI] not in schemeRhythms:
         initialAllowedSyncopationVariance = 0
@@ -119,7 +119,6 @@ def generateMelodyRhythm(bar):
     if rhythmI == len(scheme[0]) - 1:
         scheme = schemes[random.randint(0, len(schemes) - 1)]
         resetRhythmScheme()
-        resetBar = bar
     rhythmI = (rhythmI + 1) % len(scheme[0])
     return rhythmToReturn
 
