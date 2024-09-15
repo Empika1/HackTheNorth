@@ -82,7 +82,8 @@ def stopCurrentNotes(timeline,timelineNum):
     notes = timeline.notes
     for i in range(timelineOnIs[timelineNum] - timelineOffIs[timelineNum]):
         currentOffNote = notes[timelineOffIs[timelineNum]]
-        out.send(mido.Message('note_off', note=currentOffNote.note, velocity=currentOffNote.velocity, channel=channel))
+        for chan in range(0,12):
+            out.send(mido.Message('note_off', note=currentOffNote.note, velocity=currentOffNote.velocity, channel=chan))
         timelineOffIs[timelineNum] += 1
 
 def playTimeline(timeline, bpms, timelineOnI, timelineOffI): #kind of a coroutine. yields back to playPiece

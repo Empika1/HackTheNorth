@@ -71,23 +71,24 @@ def generateNextNote(lastNote, time, chord, key, nextChord, speed):
             noteChoices.append(noteChecking)
     
     # Key steps
-    noteChecking = lastNote + 1
-    noteChecking = noteChecking % 12
-    while iMap[noteChecking] == 0:
-        noteChecking += 1
-        noteChecking = noteChecking % 12
-    noteChoices.append(noteChecking)
+    # noteChecking = lastNote + 1
+    # noteChecking = noteChecking % 12
+    # while iMap[noteChecking] == 0:
+    #     noteChecking += 1
+    #     noteChecking = noteChecking % 12
+    # noteChoices.append(noteChecking)
     
-    while random.random() < speed*2/3:
-        #noteChoices.append(noteChecking)
-        noteChoices.append(lastNote)
+    # while random.random() < speed*2/3:
+    #     #noteChoices.append(noteChecking)
+    #     noteChoices.append(lastNote)
 
     if time % 4 >= 3:
         noteChoices.append(int((chord[0]+nextChord[0])/2))
         noteChoices.append(int((chord[0]+nextChord[0])/2))
         
     if note == 99:
-        while note - lastNote > 4 + int(jumpiness*6):
+        note = random.choice(noteChoices)
+        if note - lastNote > 6 + int(jumpiness*6):
             note = random.choice(noteChoices)
     
     if time % 16 < 4 and len(savedMelodies[0]) > 0:
