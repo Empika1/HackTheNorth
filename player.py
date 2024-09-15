@@ -105,12 +105,6 @@ def clamp(val, min, max):
 
 def moveTheSliders(dict):
     global sliderScales
-    dict['Fear'] = ((dict['Fear'] / 100) ** 0.5) * 100
-    dict['Anger'] = ((dict['Anger'] / 100) ** 0.5) * 100
-    dict['Happiness'] = ((dict['Happiness'] / 100) ** 2) * 100
-    dict['Calmness'] = ((dict['Calmness'] / 100) ** 2) * 100
-    print(dict)
-
     rhythm.syncopation = clamp(dict['Fear'] / 100 - dict['Calmness'] / 200, 0, 1)
     rhythm.speed = clamp(dict['Happiness'] / 300 + dict['Fear'] / 300 + dict['Anger'] / 300 - dict['Calmness'] / 200, 0, 1)
     chords.dissonance = clamp(dict['Fear'] / 250 + dict['Anger'] / 250, 0, 1)
@@ -137,8 +131,13 @@ def groqIt():
     while not dict:
         desc = groqstuff.list_emotions(img_name)
         dict = groqstuff.json_to_dict(desc)
+    dict['Fear'] = ((dict['Fear'] / 100) ** 0.5) * 100
+    dict['Anger'] = ((dict['Anger'] / 100) ** 0.5) * 100
+    dict['Happiness'] = ((dict['Happiness'] / 100) ** 2) * 100
+    dict['Calmness'] = ((dict['Calmness'] / 100) ** 2) * 100
     print(dict)
     moveTheSliders(dict)
+    determineEmoji(dict)
 
 logoFrame = ttk.Frame(root, width="400", height="160")
 logoFrame.pack_propagate(False)
@@ -153,8 +152,47 @@ playButton.grid(row=lastI, column=0, padx=10, pady=10)
 quitButton = ttk.Button(root, text="Quit", command=onClosing)
 quitButton.grid(row=lastI, column=1, padx=10, pady=10)
 
-groqButton = ttk.Button(root, text="Determine Emotion with Groq", command=groqIt)
-groqButton.grid(row=lastI, column=2, padx=10, pady=10)
+groqEmojiFrame = ttk.Frame(root)
+groqButton = ttk.Button(groqEmojiFrame, text="Determine Emotion with Groq", command=groqIt)
+groqButton.grid(row=0, column=0, padx=10, pady=0)
+emojiLabel = ttk.Label(groqEmojiFrame, text=":)", font=('TkDefaultFont', 16))
+emojiLabel.grid(row=0, column=1, padx=10, pady=0)
+groqEmojiFrame.grid(row=lastI, column=2, padx=10, pady=10)
+
+def determineEmoji(dict):
+    global emojiLabel
+    emojis = [[":|", "˙◠˙"], ["(´◡`)", "(◕‿◕)"], ["⋋_⋌", "༽◺_◿༼"], ["( ⚆ _ ⚆ )", "ヽ(O_O )ﾉ"]]
+    emoji = None
+
+    del dict['Calmness']
+
+    mostIntenseKey = None
+    mostIntenseVal = 0
+    for key, val in dict.items():
+        if val > mostIntenseVal:
+            mostIntenseKey, mostIntenseVal = key, val
+    
+    if mostIntenseVal < 30:
+        if mostIntenseKey == 'Happiness':
+            emoji = emojis[0][0]
+        else:
+            emoji = emojis[0][1]
+    elif mostIntenseVal < 66:
+        if mostIntenseKey == 'Happiness':
+            emoji = emojis[1][0]
+        elif mostIntenseKey == 'Anger':
+            emoji = emojis[2][0]
+        else:
+            emoji = emojis[3][0]
+    else:
+        if mostIntenseKey == 'Happiness':
+            emoji = emojis[1][1]
+        elif mostIntenseKey == 'Anger':
+            emoji = emojis[2][1]
+        else:
+            emoji = emojis[3][1]
+
+    emojiLabel.config(text=emoji)
 
 # labelFrame = ttk.Frame(root, width="400", height="300")
 # labelFrame.pack_propagate(False)
