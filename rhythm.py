@@ -33,7 +33,7 @@ def determineSpeed(rhythm): #takes 1 beat rhythm
         noteLength = (rhythm[i + 1] if i < len(rhythm) - 1 else 4) - rhythm[i]
         if noteLength == shortestNoteLength:
             totalSpeed += 1 / shortestNoteLength
-    return totalSpeed ** 0.25
+    return totalSpeed ** 0.1
 
 def all4BeatRhythms(divisor):
     rhythmsUnformatted = []
@@ -75,12 +75,12 @@ maxSpeed = max(rhythms, key=lambda x: x[2])[2]
 
 schemes = [
     ("AAAA" * 4, (0, 0, 0, 0) * 4),
-    ("AABB" * 4, (0.1, 0.1, -0.15, -0.15) * 4),
-    ("AAAB" * 4, (0.05, 0.05, 0.05, -0.3) * 4),
-    ("AABC" * 4, (0.05, 0.05, -0.1, -0.35) * 4),
-    ("ABCD" * 4, (0.1, -0.1, 0.5, -0.15) * 4),
-    ("AAAABBBB" * 4, (0, 0, 0, 0, 0, 0, 0, 0) * 4),
-    ("AABCAADE" * 4, (0.05, 0.05, -0.05, -0.15, 0.05, 0.05, -0.15, -0.35) * 4),
+    ("ABAB" * 4, (0.1, 0.1, -0.15, -0.15) * 4),
+    ("AABB" * 4, (0.05, 0.05, 0.05, -0.3) * 4),
+    ("ABAC" * 4, (0.05, 0.05, -0.1, -0.35) * 4),
+    ("ABCD" * 4, (0.1, -0.1, 0.5, -0.15) * 4)#,
+    #("AAAABBBB" * 4, (0, 0, 0, 0, 0, 0, 0, 0) * 4),
+    #("AABCAADE" * 4, (0.05, 0.05, -0.05, -0.15, 0.05, 0.05, -0.15, -0.35) * 4),
 ]
 
 scheme = schemes[random.randint(0, len(schemes) - 1)]

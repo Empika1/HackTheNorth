@@ -71,6 +71,10 @@ for(i, slider) in enumerate(sliders):
     slider = ttk.Scale(root, from_=0, to=100, orient='horizontal')
     slider.bind("<ButtonRelease-1>", lambda _, function_=function, slider_=slider: function_(slider_.get()))
     slider.grid(row=i, column=1, padx=5, pady=5)
+    
+music.melodyInstrument = music.rollMelodyInstrument(drums.intensity)
+music.harmonyInstrument = music.rollHarmonyInstrument(drums.intensity)
+music.drumInstrument = random.randint(8,11)
 
 timeline1 = Timeline(music.melodyInstrument, [])
 timeline2 = Timeline(music.harmonyInstrument, [])
@@ -195,14 +199,14 @@ def editMusic():
                     nextChordNotes = chords.getNotesFromChord(progressions[-1][int(thisNoteO.time % 4)+1])
                 else: 
                     nextChordNotes = chords.getNotesFromChord(progressions[-1][0])
-                thisNote = generateNextNote(lastNote, thisNoteO.time, chordNotes, chords.key, nextChordNotes)
+                thisNote = generateNextNote(lastNote, thisNoteO.time, chordNotes, chords.key, nextChordNotes, rhythm.speed)
                 thisNoteO.note = thisNote + 12 + rootNote
                 nextNoteToGenerateIndex += 1
 
         #add drums
         if timeInto + drumBuffer >= noteTimeToTime(nextDrumBarToGenerate * 4, piece.bpms):
             
-            drums.pasteDrumLoop(currentDrumPattern, timeline3, nextDrumBarToGenerate*4)
+            drums.pasteDrumLoop(currentDrumPattern, timeline3, nextDrumBarToGenerate*4, drums.intensity)
             nextDrumBarToGenerate += 1
         
 
@@ -222,7 +226,7 @@ def onClosing():
 
 root.protocol("WM_DELETE_WINDOW", onClosing)
 
-#random.seed(0)
+random.seed(31)
 editThread = threading.Thread(target=editMusic)
 editThread.start()
 
