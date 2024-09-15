@@ -119,6 +119,7 @@ def editMusic():
         currentBeat = 0
         currentBar = 0
         current4Bar = 0
+        
         def getTimes(): #if i want to call this multiple times in the loop?
             nonlocal currentTime, timeInto, currentBeat, currentBar, current4Bar
             currentTime = time.time() #avoids weird shit
@@ -198,6 +199,7 @@ def editMusic():
             
             drums.pasteDrumLoop(currentDrumPattern, timeline3, nextDrumBarToGenerate*4)
             nextDrumBarToGenerate += 1
+        
 
 def play():
     global timeline1, piece

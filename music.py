@@ -105,6 +105,8 @@ def playTimeline(timeline, bpms, timelineOnI, timelineOffI): #kind of a coroutin
             timelineOffI_ += 1
             if timelineOffI_ < len(notes):
                 currentOffNote = notes[timelineOffI_]
+            else:
+                break
     else:
         return (timelineOnI_, timelineOffI_, True)
     if timelineOnI_ < len(notes):
