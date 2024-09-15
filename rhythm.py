@@ -3,7 +3,7 @@ from sympy.utilities.iterables import multiset_permutations
 import math
 
 #all from 0 to 1
-speed = 0.07
+speed = 0
 syncopation = 0
 sporadicness = 0 #0 = very repetitive, 1 = very sporadic
 
@@ -79,7 +79,7 @@ schemes = [
     ("AAAB" * 4, (0.05, 0.05, 0.05, -0.3) * 4),
     ("AABC" * 4, (0.05, 0.05, -0.1, -0.35) * 4),
     ("ABCD" * 4, (0.1, -0.1, 0.5, -0.15) * 4),
-    ("AAAABBBB" * 4, (1, 1, 1, 1, 1, 1, 1, 1, 1) * 4),
+    ("AAAABBBB" * 4, (0, 0, 0, 0, 0, 0, 0, 0) * 4),
     ("AABCAADE" * 4, (0.05, 0.05, -0.05, -0.15, 0.05, 0.05, -0.15, -0.35) * 4),
 ]
 
@@ -95,12 +95,13 @@ def generateMelodyRhythm():
     global rhythms, syncopation, speed, minSyncopation, maxSyncopation, minSpeed, maxSpeed
     global schemes, scheme, schemeRhythms, rhythmI
 
-    print(rhythmI)
     if scheme[0][rhythmI] not in schemeRhythms:
         initialAllowedSyncopationVariance = 0
         initialAllowedSpeedVariance = 0
         retries = 100000
 
+        modifiedSpeed = max(0, min(speed + scheme[1][rhythmI], 1)) #so different rhythms can have different speeds
+        print(modifiedSpeed)
         for i in range(retries + 1):
             allowedSyncopationVariance = (initialAllowedSyncopationVariance * (1 - i / retries) + 1 * (i / retries)) ** 1.5
             allowedSpeedVariance = (initialAllowedSpeedVariance * (1 - i / retries) + 1 * (i / retries)) ** 4
@@ -108,8 +109,6 @@ def generateMelodyRhythm():
             potentialIndex = random.randint(0, len(rhythms) - 1)
             indexSyncopation = (rhythms[potentialIndex][1] - minSyncopation) / (maxSyncopation - minSyncopation)
             indexSpeed = (rhythms[potentialIndex][2] - minSpeed) / (maxSpeed - minSpeed)
-
-            modifiedSpeed = max(0, min(speed + scheme[1][rhythmI], 1)) #so different rhythms can have different speeds
             if (abs(indexSyncopation - syncopation) <= allowedSyncopationVariance and
                 abs(indexSpeed - modifiedSpeed) <= allowedSpeedVariance):
                 # print(allowedSyncopationVariance, allowedSpeedVariance)
@@ -119,7 +118,6 @@ def generateMelodyRhythm():
     if rhythmI == len(scheme[0]) - 1:
         scheme = schemes[random.randint(0, len(schemes) - 1)]
         resetRhythmScheme()
-        print(scheme[0])
     rhythmI = (rhythmI + 1) % len(scheme[0])
     return rhythmToReturn
 

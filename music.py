@@ -133,7 +133,9 @@ def playPiece(piece, stopAutomatically = False):
         if done or (stopAutomatically and all(dones)):
             break
 
-def stopPlaying():
+def stopPlaying(piece):
     global done
     done = True
+    for i, timeline in enumerate(piece.timelines):
+        stopCurrentNotes(timeline, i)
 

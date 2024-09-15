@@ -205,15 +205,15 @@ def play():
     playPiece(piece)
 
 done = False
-def on_closing():
-    global editThread, playThread, done
+def onClosing():
+    global editThread, playThread, done, piece
     done = True
     root.destroy()
     editThread.join()
-    stopPlaying()
+    stopPlaying(piece)
     playThread.join()
 
-root.protocol("WM_DELETE_WINDOW", on_closing)
+root.protocol("WM_DELETE_WINDOW", onClosing)
 
 #random.seed(0)
 editThread = threading.Thread(target=editMusic)
