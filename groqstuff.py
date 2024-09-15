@@ -93,19 +93,6 @@ def list_emotions(image_path, print_it = False):
         
     return json_to_dict(text_chat_completion.choices[0].message.content)
 
-def getNum(threechars):
-    print(threechars)
-    num = 0
-    if ("" + threechars[0]).isdigit():
-        num += int(threechars[0])
-    if ("" + threechars[1]).isdigit():
-        num *= 10
-        num += int(threechars[1])
-    if ("" + threechars[2]).isdigit():
-        num *= 10
-        num += int(threechars[2])
-    return num
-
 def json_to_dict(json_message):
     string = str(json_message)
     #print("x", string)
