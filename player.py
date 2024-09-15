@@ -25,6 +25,7 @@ def onSyncopationChange(value):
     rhythm.syncopation = float(value) / 100
 
 def onSpeedChange(value):
+    print(value)
     rhythm.speed = float(value) / 100
 
 def onSporadicnessChange(value):
@@ -63,7 +64,8 @@ frame.grid(row=0, column=0, sticky=(tk.W, tk.E, tk.N, tk.S))
 for(i, slider) in enumerate(sliders):
     function = functions[i]
     ttk.Label(root, text=slider).grid(row=i, column=0, padx=5, pady=5)
-    slider = ttk.Scale(root, from_=0, to=100, orient='horizontal', command=function)
+    slider = ttk.Scale(root, from_=0, to=100, orient='horizontal')
+    slider.bind("<ButtonRelease-1>", lambda _, function_=function, slider_=slider: function_(slider_.get()))
     slider.grid(row=i, column=1, padx=5, pady=5)
 
 timeline1 = Timeline(0, [])
@@ -78,6 +80,10 @@ def editMusic():
     currentBeat = 0
     currentBar = 0
     current4Bar = 0
+
+    oldDissonance = chords.dissonance
+    oldCreativity = chords.creativity
+    oldMajorness = chords.majorness
 
     #melody rhythm vars
     melodyBuffer = 0.5 #seconds
@@ -119,6 +125,11 @@ def editMusic():
             #print("8", progressions)
             current4Bar = currentBar // 4
         getTimes()
+
+        oldDissonance = chords.dissonance
+        oldCreativity = chords.creativity
+        oldMajorness = chords.majorness
+
         #print("9", progressions)
 
         #add melody rhythm
@@ -191,7 +202,7 @@ def editMusic():
                 nextNoteToGenerateIndex += 1
                 #print("41", progressions)
         #print("42", progressions)
-        
+
         #add drums
 
 def play():
