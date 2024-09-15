@@ -3,8 +3,8 @@ from sympy.utilities.iterables import multiset_permutations
 import math
 
 #all from 0 to 1
-speed = 0.2
-syncopation = 0.15
+speed = 0.07
+syncopation = 0
 sporadicness = 0 #0 = very repetitive, 1 = very sporadic
 
 def determineNotePulse(noteTime): #higher number = more syncopation
