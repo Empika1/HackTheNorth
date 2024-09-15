@@ -66,7 +66,6 @@ def playTimeline(timeline, bpms, timelineOnI, timelineOffI): #kind of a coroutin
         currentOnNote = notes[timelineOnI_]
         while currentTime - startTime > noteTimeToTime(currentOnNote.time, bpms):
             out.send(mido.Message('note_on', note=currentOnNote.note, velocity=currentOnNote.velocity, channel=channel))
-            print("bip", channel)
             timelineOnI_ += 1
             if timelineOnI_ < len(notes):
                 currentOnNote = notes[timelineOnI_]

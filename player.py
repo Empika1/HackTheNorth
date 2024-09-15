@@ -26,7 +26,6 @@ def onSyncopationChange(value):
     rhythm.syncopation = float(value) / 100
 
 def onSpeedChange(value):
-    print(value)
     rhythm.speed = float(value) / 100
 
 def onSporadicnessChange(value):
@@ -82,6 +81,8 @@ def editMusic():
     currentBar = 0
     current4Bar = 0
 
+    oldSyncopation = rhythm.syncopation
+    oldSpeed = rhythm.speed
     oldDissonance = chords.dissonance
     oldCreativity = chords.creativity
     oldMajorness = chords.majorness
@@ -124,7 +125,12 @@ def editMusic():
         if oldDissonance != chords.dissonance or oldCreativity != chords.creativity or oldMajorness != chords.majorness:
             newprog = chords.generateProgression()
             progressions.append(newprog)
+        
+        if oldSyncopation != rhythm.syncopation or oldSpeed != rhythm.speed:
+            rhythm.resetRhythmScheme()
 
+        oldSyncopation = rhythm.syncopation
+        oldSpeed = rhythm.speed
         oldDissonance = chords.dissonance
         oldCreativity = chords.creativity
         oldMajorness = chords.majorness

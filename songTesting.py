@@ -25,8 +25,6 @@ rhythms = [generateMelodyRhythm(),generateMelodyRhythm()]
 
 for i in range(8):
     notes = getNotesFromChord(progression[i%4])
-    print(progression[i%4])
-    print(notes)
     noteTime = 0 if len(timeline2.notes) == 0 else timeline2.notes[-1].time + timeline2.notes[-1].length
     note = Note(rootNote + notes[0], noteTime, 35 + (5 if noteTime % 4 == 0 else 0) + (5 if noteTime % 2 == 0 else 0), 4)
     timeline2.notes.append(note)
