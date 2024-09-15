@@ -18,24 +18,20 @@ client = Groq(
     api_key="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",
 )
 
-IMGprompt = ("Give me detailed and lengthly text describing the scenery in the image, the people in it, and the general scenario of what is happening. Be sure to mention their facial expressions and body language, and also if they are smiling or not. Also, start every description by saying START:")
-TXTprompt = ("Using the following description of a scenario, please provide a ranked listing of the emotions present in the image, by using the following format: \n" +
-             "Happiness: x%\n" +
-             "Sadness: x%\n" +
-             "Anger: x%\n" +
-             "Fear: x%\n" +
-             "Calmness: x%\n"
-             )
+IMGprompt = ("Describe in great detail the facial expresions and body language of the largest and most prevalent person in the image. Also, start every description by saying START:")
+# TXTprompt = ("Using the following description of a scenario, please provide a ranked listing of the emotions present in the people in image, by using the following format (keep in mind neutral does not mean happy, and yelling faces are angry): \n" +
+#              "Happiness: x%\n" +
+#              "Anger: x%\n" +
+#              "Fear: x%\n" +
+#              "Calmness: x%\n"
+#              )
 json_prompt = (
-    "You are a data analyst API who analyzes emotional content in texts, and responds in JSON.  The JSON schema should include " +
+    "You are a data analyst API who analyzes emotional content in scenario descriptions, and responds in JSON. The JSON schema must include " +
     "{\n" +
-    "\t'emotion_analysis': {\n" +
-    "\t\t'Happiness': 'number (0-100)'\n" +
-    "\t\t'Sadness': 'number (0-100)'\n" +
-    "\t\t'Anger': 'number (0-100)'\n" +
-    "\t\t'Fear': 'number (0-100)'\n" +
-    "\t\t'Calmness': 'number (0-100)'\n"
-    "\t}" +
+    "\t'Happiness': 'number (0-100)'\n" +
+    "\t'Anger': 'number (0-100)'\n" +
+    "\t'Fear': 'number (0-100)'\n" +
+    "\t'Calmness': 'number (0-100)'\n"
     "}")
 
 def describe_image(image_path, print_it=False):
@@ -97,8 +93,26 @@ def list_emotions(image_path, print_it = False):
         
     return json_to_dict(text_chat_completion.choices[0].message.content)
 
+def getNum(threechars):
+    print(threechars)
+    num = 0
+    if ("" + threechars[0]).isdigit():
+        num += int(threechars[0])
+    if ("" + threechars[1]).isdigit():
+        num *= 10
+        num += int(threechars[1])
+    if ("" + threechars[2]).isdigit():
+        num *= 10
+        num += int(threechars[2])
+    return num
+
 def json_to_dict(json_message):
-    data = json.loads(json_message)
-    return(data['emotion_analysis'])
-    
-print(list_emotions("C:\\beach.jpg"))
+    string = str(json_message)
+    #print("x", string)
+    try:
+        dict = eval(string) #fuck
+        if 'Happiness' not in dict or 'Anger' not in dict or 'Fear' not in dict or 'Calmness' not in dict:
+            return None
+        return dict
+    except:
+        return None

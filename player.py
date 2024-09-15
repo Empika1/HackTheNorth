@@ -13,6 +13,9 @@ import melody
 from melody import generateNextNote
 import sv_ttk
 import drums
+import cv2
+from PIL import Image, ImageTk 
+import groqstuff
 
 # Create the main window
 root = tk.Tk()
@@ -65,12 +68,85 @@ frame = ttk.Frame(root, padding="10")
 frame.grid(row=0, column=0, sticky=(tk.W, tk.E, tk.N, tk.S))
 
 #add the sliders
+lastI = 0
 for(i, slider) in enumerate(sliders):
     function = functions[i]
-    ttk.Label(root, text=slider).grid(row=i, column=0, padx=5, pady=5)
+    ttk.Label(root, text=slider).grid(row=i, column=0, padx=10, pady=10)
     slider = ttk.Scale(root, from_=0, to=100, orient='horizontal')
     slider.bind("<ButtonRelease-1>", lambda _, function_=function, slider_=slider: function_(slider_.get()))
-    slider.grid(row=i, column=1, padx=5, pady=5)
+    slider.grid(row=i, column=1, padx=10, pady=10)
+    lastI = i + 1
+
+editThread = None
+playThread = None
+# groqThread = None
+def start():
+    global editThread, playThread, groqThread
+    #random.seed(0)
+    editThread = threading.Thread(target=editMusic)
+    editThread.start()
+
+    playThread = threading.Thread(target=play)
+    playThread.start()
+
+    # groqThread = threading.Thread(target=updateVideo)
+    # groqThread.start()
+
+done = False
+def onClosing():
+    global editThread, playThread, groqThread, done, piece
+    done = True
+    root.destroy()
+    editThread.join()
+    stopPlaying(piece)
+    playThread.join()
+    # groqThread.join()
+
+frame = None
+def groqIt():
+    global frame
+    img_name = "pic.png"
+    cv2.imwrite(img_name, frame)
+    try:
+        desc = groqstuff.list_emotions(img_name)
+        groqstuff.json_to_dict(desc)
+        # print(desc)
+        print(groqstuff.json_to_dict(desc))
+        # print("a")
+    except:
+        pass
+
+playButton = ttk.Button(root, text="Play", command=start)
+playButton.grid(row=lastI, column=0, padx=10, pady=10)
+
+quitButton = ttk.Button(root, text="Quit", command=onClosing)
+quitButton.grid(row=lastI, column=1, padx=10, pady=10)
+
+groqButton = ttk.Button(root, text="Determine Emotion with Groq", command=groqIt)
+groqButton.grid(row=lastI, column=2, padx=10, pady=10)
+
+labelFrame = ttk.Frame(root, width="400", height="300")
+labelFrame.pack_propagate(False)
+camLabel = ttk.Label(labelFrame, text="yes") 
+camLabel.pack(fill=tk.BOTH, expand=True)
+labelFrame.grid(row=0, column=2, rowspan=lastI, padx=10, pady=10)
+
+vid = cv2.VideoCapture(0) 
+width, height = 400, 300
+vid.set(cv2.CAP_PROP_FRAME_WIDTH, width) 
+vid.set(cv2.CAP_PROP_FRAME_HEIGHT, height)
+
+def update_frame():
+    global frame
+    _, frame = vid.read()
+    opencv_image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGBA)
+    captured_image = Image.fromarray(opencv_image)
+    bgImage = ImageTk.PhotoImage(image=captured_image)
+    camLabel.photo_image = bgImage
+    camLabel.configure(image=bgImage)
+    camLabel.after(50, update_frame)  # Schedule the next update after 50 milliseconds
+
+update_frame()
 
 timeline1 = Timeline(music.melodyInstrument, [])
 timeline2 = Timeline(music.harmonyInstrument, [])
@@ -159,13 +235,13 @@ def editMusic():
 
         #add melody rhythm
         if timeInto + melodyBuffer >= noteTimeToTime(nextRhythmBarToGenerate * 4, piece.bpms):
-            nextRhythmBarToGenerate += 1
             nextRhythm = generateMelodyRhythm()
             for j in range(len(nextRhythm)):
                 noteLen = (nextRhythm[j + 1] if j < len(nextRhythm) - 1 else 4) - nextRhythm[j]
                 note = Note(60, nextRhythm[j] + currentBar * 4, 70, noteLen)
                 timeline1.notes.append(note)
             chordNotes = getNotesFromChord(progressions[-1][nextChordBarToGenerate % 4])
+            nextRhythmBarToGenerate += 1
         
         #add chords   
         if timeInto + chordBuffer >= noteTimeToTime(nextChordBarToGenerate * 4, piece.bpms):
@@ -207,22 +283,6 @@ def play():
     init()
     playPiece(piece)
 
-done = False
-def onClosing():
-    global editThread, playThread, done, piece
-    done = True
-    root.destroy()
-    editThread.join()
-    stopPlaying(piece)
-    playThread.join()
-
 root.protocol("WM_DELETE_WINDOW", onClosing)
-
-#random.seed(0)
-editThread = threading.Thread(target=editMusic)
-editThread.start()
-
-playThread = threading.Thread(target=play)
-playThread.start()
 
 root.mainloop()
