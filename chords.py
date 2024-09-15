@@ -3,7 +3,7 @@ import random
 
 #ALL 0-1
 dissonance = 0
-creativity = 0.5
+creativity = 0
 majorness = 0
 
 sampleMinorProgressions = [
@@ -130,8 +130,8 @@ def makeMegaWeightMap():
     megaWeightMapMinorQualities = [
         #this is gibberish and completely subjective
         ["g", "bd", "c", "c", "d", "c", "bd", "c", "bd", "d", "d", "bd"],
-        ["b", "bd", "c", "g", "d", "e", "bd", "g", "c", "d", "c", "bd"],
-        ["b", "bd", "c", "e", "d", "e", "bd", "e", "c", "d", "c", "bd"],
+        ["b", "bd", "c", "e", "d", "e", "bd", "g", "c", "d", "c", "bd"],
+        ["b", "bd", "c", "e", "d", "e", "bd", "c", "c", "d", "e", "bd"],
         ["b", "bd", "c", "e", "d", "e", "bd", "g", "c", "d", "c", "d"]
     ]
     

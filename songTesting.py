@@ -5,7 +5,7 @@ from rhythm import *
 import random
 from melody import *
 
-rootNote = 44 + random.randint(0,7)
+rootNote = 40 + random.randint(0,7)
 
 timeline1 = Timeline(0, []) 
 timeline2 = Timeline(1, [])
@@ -16,10 +16,10 @@ intensity = 0
 #for i in range(40):
     #timeline2.notes.append(Note(36, i, 70, 1))
 
-piece = Piece([(random.randint(70,90), 0)], [timeline1, timeline2, timeline3])
+piece = Piece([(random.randint(85,110), 0)], [timeline1, timeline2, timeline3])
 
 for i in range(8):
-    pasteDrumLoop("BigRoll", timeline3, i*4)
+    pasteDrumLoop("FullRock", timeline3, i*4)
 
 rhythms = [generateMelodyRhythm(),generateMelodyRhythm()]
 

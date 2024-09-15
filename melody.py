@@ -2,10 +2,13 @@ import random
 from chords import *
 
 jumpiness = 0
+repetetiveness = 0
 
 currentMelodyLog = []
-savedMelody = []
+savedMainMelody = []
+savedSecondaryMelody = []
 replayingPos = 0
+loopedMelody = []
 
 def findNearestNote(note, iMap):
     octaveFactor = 0
@@ -22,7 +25,7 @@ def findNearestNote(note, iMap):
             return note+1+octaveFactor*12
 
 def generateNextNote(lastNote, time, chord, key):
-    global savedMelody, currentMelodyLog, replayingPos
+    global savedMainMelody, currentMelodyLog, replayingPos, savedSecondaryMelody, loopedMelody
     noteChoices = chord
     note = 99
     
@@ -64,15 +67,34 @@ def generateNextNote(lastNote, time, chord, key):
             note = random.choice(noteChoices)
     
     if time % 16 < 4:
+        if len(currentMelodyLog) == 0:
+            replayingPos = 0
+        if len(loopedMelody) > 0:
+            if len(loopedMelody) > replayingPos:
+                note = findNearestNote(chord[0] + loopedMelody[replayingPos], iMap)
+                replayingPos += 1
+        else:
+            currentMelodyLog.append(note)
+    elif time % 16 < 8:
+        if len(savedMainMelody) == 0:
+            savedMainMelody = currentMelodyLog
+            currentMelodyLog = []
         currentMelodyLog.append(note)
-    elif len(savedMelody) == 0 and time % 16 < 8:
-        savedMelody = currentMelodyLog
     if time % 16 < 12 and time % 16 >= 8:
-        note = findNearestNote(chord[0] + savedMelody[replayingPos], iMap)
-        replayingPos += 1
+        if len(savedSecondaryMelody) == 0:
+            savedSecondaryMelody = currentMelodyLog
+            currentMelodyLog = []
+        if len(savedMainMelody) > replayingPos:
+            note = findNearestNote(chord[0] + savedMainMelody[replayingPos], iMap)
+            replayingPos += 1
     if time % 16 > 12:
-        savedMelody = []
-        currentMelodyLog = []
-        replayingPos = 0
+        if len(savedMainMelody) > 0:
+            if random.random() < repetetiveness:
+                loopedMelody = savedMainMelody
+            savedMainMelody = []
+            replayingPos = 0
+        if len(savedSecondaryMelody) > replayingPos:
+            note = findNearestNote(chord[0] + savedSecondaryMelody[replayingPos], iMap)
+            replayingPos += 1
     
     return note
